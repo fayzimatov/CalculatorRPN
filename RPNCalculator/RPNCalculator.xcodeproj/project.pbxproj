@@ -11,7 +11,7 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		FB2661802D7979EB00B5136C /* Exceptions for "RPNCalculator" folder in "RPNCalculator" target */ = {
+		FB2661B02D799C9A00B5136C /* Exceptions for "RPNCalculator" folder in "RPNCalculator" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
@@ -21,10 +21,10 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		FB2661702D7979EA00B5136C /* RPNCalculator */ = {
+		FB2661A92D799C9A00B5136C /* RPNCalculator */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				FB2661802D7979EB00B5136C /* Exceptions for "RPNCalculator" folder in "RPNCalculator" target */,
+				FB2661B02D799C9A00B5136C /* Exceptions for "RPNCalculator" folder in "RPNCalculator" target */,
 			);
 			path = RPNCalculator;
 			sourceTree = "<group>";
@@ -45,7 +45,7 @@
 		FB2661652D7979EA00B5136C = {
 			isa = PBXGroup;
 			children = (
-				FB2661702D7979EA00B5136C /* RPNCalculator */,
+				FB2661A92D799C9A00B5136C /* RPNCalculator */,
 				FB26616F2D7979EA00B5136C /* Products */,
 			);
 			sourceTree = "<group>";
@@ -74,7 +74,7 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				FB2661702D7979EA00B5136C /* RPNCalculator */,
+				FB2661A92D799C9A00B5136C /* RPNCalculator */,
 			);
 			name = RPNCalculator;
 			packageProductDependencies = (
