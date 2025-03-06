@@ -4,7 +4,6 @@
 //
 //  Created by Umidjon on 06/03/25.
 //
-//Umidjon
 
 import UIKit
 
