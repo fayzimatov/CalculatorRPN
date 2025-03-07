@@ -6,8 +6,13 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		FB7980682D7AE32D000C2085 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB7980612D7AE32D000C2085 /* ViewController.swift */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		FB26616E2D7979EA00B5136C /* RPNCalculator.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RPNCalculator.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		FB7980612D7AE32D000C2085 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -46,6 +51,7 @@
 			isa = PBXGroup;
 			children = (
 				FB2661A92D799C9A00B5136C /* RPNCalculator */,
+				FB7980692D7AE966000C2085 /* Controllers */,
 				FB26616F2D7979EA00B5136C /* Products */,
 			);
 			sourceTree = "<group>";
@@ -56,6 +62,14 @@
 				FB26616E2D7979EA00B5136C /* RPNCalculator.app */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		FB7980692D7AE966000C2085 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				FB7980612D7AE32D000C2085 /* ViewController.swift */,
+			);
+			path = Controllers;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -132,6 +146,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FB7980682D7AE32D000C2085 /* ViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
