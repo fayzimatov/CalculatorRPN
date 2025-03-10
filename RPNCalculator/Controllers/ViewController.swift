@@ -9,6 +9,7 @@ import UIKit
 
 class ViewController: UIViewController {
 
+// MARK: - UI Elements
     
     private let buttonElements: [[String]] = [
         ["(", ")", "%", "÷"],
@@ -17,6 +18,35 @@ class ViewController: UIViewController {
         ["1", "2", "3", "+"],
         ["AC", "0", ",", "="]
     ]
+
+    
+    private let buttonColors: [String: UIColor] = [
+        "(": UIColor(named: "lightGray") ?? .gray,
+        ")": UIColor(named: "lightGray") ?? .gray,
+        "%": UIColor(named: "lightGray") ?? .gray,
+        "÷": UIColor(named: "orange") ?? .orange,
+        
+        "7": UIColor(named: "gray") ?? .gray,
+        "8": UIColor(named: "gray") ?? .gray,
+        "9": UIColor(named: "gray") ?? .gray,
+        "×": UIColor(named: "orange") ?? .orange,
+        
+        "4": UIColor(named: "gray") ?? .gray,
+        "5": UIColor(named: "gray") ?? .gray,
+        "6": UIColor(named: "gray") ?? .gray,
+        "-": UIColor(named: "orange") ?? .orange,
+        
+        "1": UIColor(named: "gray") ?? .gray,
+        "2": UIColor(named: "gray") ?? .gray,
+        "3": UIColor(named: "gray") ?? .gray,
+        "+": UIColor(named: "orange") ?? .orange,
+        
+        "AC": UIColor(named: "gray") ?? .gray,
+        "0": UIColor(named: "gray") ?? .gray,
+        ",": UIColor(named: "gray") ?? .gray,
+        "=": UIColor(named: "orange") ?? .orange
+    ]
+        
 
     
     private let inputLabel: UILabel = {
@@ -36,20 +66,20 @@ class ViewController: UIViewController {
         setupUI()
     }
 
-    
+    // создание ui-элементов -- кофингурация отдельных сабвью + setupConstraints() -- конфигурация экрана
     private func setupUI() {
         view.backgroundColor = UIColor(resource: .black)
         view.addSubview(inputLabel)
         
         inputLabel.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            inputLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 150),
+            inputLabel.topAnchor.constraint(equalTo: view.centerYAnchor, constant: -240),
             inputLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             inputLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
             inputLabel.heightAnchor.constraint(equalToConstant: 100)
-        ])
+        ])//вынести константы в переменные
         
-        
+        //вынести стек в ui-элементы
         let vStackView = UIStackView()
         vStackView.axis = .vertical
         vStackView.distribution = .fillEqually
@@ -73,16 +103,9 @@ class ViewController: UIViewController {
             vStackView.addArrangedSubview(rowStackView)
             
             for title in row {
-                if title == "(" || title == ")" || title == "%" {
-                    let button = createButton(title: title, buttonColor: "lightGray")
-                    rowStackView.addArrangedSubview(button)
-                } else if title == "÷" || title == "×" || title == "-" || title == "=" || title == "+" {
-                    let button = createButton(title: title, buttonColor: "orange")
-                    rowStackView.addArrangedSubview(button)
-                } else {
-                    let button = createButton(title: title, buttonColor: "gray")
-                    rowStackView.addArrangedSubview(button)
-                }
+                let color = buttonColors[title] ?? .gray
+                let button = createButton(title: title, buttonColor: color)
+                rowStackView.addArrangedSubview(button)
             }
         }
     }
@@ -90,13 +113,14 @@ class ViewController: UIViewController {
     
     
     
-    private func createButton(title: String,buttonColor: String) -> UIButton {
-        let button = UIButton(type: .system)
+    private func createButton(title: String,buttonColor: UIColor) -> UIButton {
+        let button = RoundedButton(type: .system)
         button.tintColor = .white
         button.titleLabel?.font = .boldSystemFont(ofSize: 24)
         button.setTitle(title, for: .normal)
-        button.backgroundColor = UIColor(named: buttonColor)
+        button.backgroundColor = buttonColor
         button.layer.cornerRadius = 40
+        button.layer.masksToBounds = true
         button.addTarget(self, action: #selector(buttonTapped(_ :)), for: .touchUpInside)
         return button
     }

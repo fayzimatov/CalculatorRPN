@@ -8,11 +8,14 @@
 
 /* Begin PBXBuildFile section */
 		FB7980682D7AE32D000C2085 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB7980612D7AE32D000C2085 /* ViewController.swift */; };
+		FB79806C2D7B37CD000C2085 /* RoundedButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB79806B2D7B37CD000C2085 /* RoundedButton.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		D1306FFD2D7F6268007A6670 /* Globals.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Globals.swift; sourceTree = "<group>"; };
 		FB26616E2D7979EA00B5136C /* RPNCalculator.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RPNCalculator.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FB7980612D7AE32D000C2085 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		FB79806B2D7B37CD000C2085 /* RoundedButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedButton.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -47,10 +50,19 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		D1306FFC2D7F623A007A6670 /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				D1306FFD2D7F6268007A6670 /* Globals.swift */,
+			);
+			path = Utils;
+			sourceTree = "<group>";
+		};
 		FB2661652D7979EA00B5136C = {
 			isa = PBXGroup;
 			children = (
 				FB2661A92D799C9A00B5136C /* RPNCalculator */,
+				D1306FFC2D7F623A007A6670 /* Utils */,
 				FB7980692D7AE966000C2085 /* Controllers */,
 				FB26616F2D7979EA00B5136C /* Products */,
 			);
@@ -68,6 +80,7 @@
 			isa = PBXGroup;
 			children = (
 				FB7980612D7AE32D000C2085 /* ViewController.swift */,
+				FB79806B2D7B37CD000C2085 /* RoundedButton.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -147,6 +160,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				FB7980682D7AE32D000C2085 /* ViewController.swift in Sources */,
+				FB79806C2D7B37CD000C2085 /* RoundedButton.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -167,6 +181,7 @@
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -194,6 +209,7 @@
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
