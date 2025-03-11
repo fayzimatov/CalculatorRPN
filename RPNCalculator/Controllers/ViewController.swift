@@ -20,33 +20,75 @@ class ViewController: UIViewController {
     ]
 
     
-    private let buttonColors: [String: UIColor] = [
-        "(": UIColor(named: "lightGray") ?? .gray,
-        ")": UIColor(named: "lightGray") ?? .gray,
-        "%": UIColor(named: "lightGray") ?? .gray,
-        "÷": UIColor(named: "orange") ?? .orange,
-        
-        "7": UIColor(named: "gray") ?? .gray,
-        "8": UIColor(named: "gray") ?? .gray,
-        "9": UIColor(named: "gray") ?? .gray,
-        "×": UIColor(named: "orange") ?? .orange,
-        
-        "4": UIColor(named: "gray") ?? .gray,
-        "5": UIColor(named: "gray") ?? .gray,
-        "6": UIColor(named: "gray") ?? .gray,
-        "-": UIColor(named: "orange") ?? .orange,
-        
-        "1": UIColor(named: "gray") ?? .gray,
-        "2": UIColor(named: "gray") ?? .gray,
-        "3": UIColor(named: "gray") ?? .gray,
-        "+": UIColor(named: "orange") ?? .orange,
-        
-        "AC": UIColor(named: "gray") ?? .gray,
-        "0": UIColor(named: "gray") ?? .gray,
-        ",": UIColor(named: "gray") ?? .gray,
-        "=": UIColor(named: "orange") ?? .orange
-    ]
-        
+    
+//    enum ButtonType: String {
+//        
+//        case function = "(",")","%","AC"
+//        case operatorSymbol = "÷", "×", "-", "+", "="
+//        case number = "0","1", "2", "3", "4", "5", "6", "7", "8", "9", ","
+//        
+//        
+//        var color: UIColor {
+//            switch self {
+//            case .function:
+//                return UIColor(named: "lightGray") ?? .lightGray
+//            case .operatorSymbol:
+//                return UIColor(named: "orange") ?? .orange
+//            case .number:
+//                return UIColor(named: "gray") ?? .gray
+//            }
+//        }
+//    }
+//    
+    
+//    enum ButtonType {
+//        case function, operatorSymbol, number
+//        
+//        static func getType(for title: String) -> ButtonType? {
+//            switch title {
+//            case "(", ")", "%", "AC":
+//                return .function
+//            case "÷", "×", "-", "+", "=":
+//                return .operatorSymbol
+//            case "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", ",":
+//                return .number
+//            default:
+//                return nil
+//            }
+//        }
+//        
+//        var color: UIColor {
+//            switch self {
+//            case .function:
+//                return UIColor(named: "lightGray") ?? .lightGray
+//            case .operatorSymbol:
+//                return UIColor(named: "orange") ?? .orange
+//            case .number:
+//                return UIColor(named: "gray") ?? .gray
+//            }
+//        }
+//    }
+
+    
+    enum ButtonType {
+            case number, operatorSymbol, function
+        }
+
+    private func getButtonColor(for title: String) -> UIColor {
+            switch title {
+            case "(", ")", "%","AC":
+                return UIColor(named: "customLightGray") ?? .gray
+            case "÷", "×", "-", "+", "=":
+                return UIColor(named: "customOrange") ?? .orange
+            default:
+                return UIColor(named: "customGray") ?? .gray
+            }
+        }
+
+    
+    
+    
+   
 
     
     private let inputLabel: UILabel = {
@@ -68,7 +110,7 @@ class ViewController: UIViewController {
 
     // создание ui-элементов -- кофингурация отдельных сабвью + setupConstraints() -- конфигурация экрана
     private func setupUI() {
-        view.backgroundColor = UIColor(resource: .black)
+        view.backgroundColor = UIColor(resource: .customBlack)
         view.addSubview(inputLabel)
         
         inputLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -103,7 +145,7 @@ class ViewController: UIViewController {
             vStackView.addArrangedSubview(rowStackView)
             
             for title in row {
-                let color = buttonColors[title] ?? .gray
+                let color = getButtonColor(for: title)
                 let button = createButton(title: title, buttonColor: color)
                 rowStackView.addArrangedSubview(button)
             }
@@ -111,7 +153,7 @@ class ViewController: UIViewController {
     }
 
     
-    
+
     
     private func createButton(title: String,buttonColor: UIColor) -> UIButton {
         let button = RoundedButton(type: .system)
@@ -129,7 +171,9 @@ class ViewController: UIViewController {
     @objc private func buttonTapped(_ sender: UIButton) {
         //print(sender.titleLabel?.text)
     }
+   
     
+     
     
 }
 

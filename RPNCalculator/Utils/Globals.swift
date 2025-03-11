@@ -7,3 +7,4 @@
 
 public let windowWidth: CGFloat = UIScreen.main.bounds.width
 public let windowHeight: CGFloat = UIScreen.main.bounds.height
+

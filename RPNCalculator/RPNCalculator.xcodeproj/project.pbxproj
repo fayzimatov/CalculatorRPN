@@ -7,12 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		D1306FFF2D7F6507007A6670 /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1306FFE2D7F64FD007A6670 /* Model.swift */; };
 		FB7980682D7AE32D000C2085 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB7980612D7AE32D000C2085 /* ViewController.swift */; };
 		FB79806C2D7B37CD000C2085 /* RoundedButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB79806B2D7B37CD000C2085 /* RoundedButton.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		D1306FFD2D7F6268007A6670 /* Globals.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Globals.swift; sourceTree = "<group>"; };
+		D1306FFE2D7F64FD007A6670 /* Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Model.swift; sourceTree = "<group>"; };
 		FB26616E2D7979EA00B5136C /* RPNCalculator.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RPNCalculator.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FB7980612D7AE32D000C2085 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		FB79806B2D7B37CD000C2085 /* RoundedButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedButton.swift; sourceTree = "<group>"; };
@@ -79,6 +81,7 @@
 		FB7980692D7AE966000C2085 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				D1306FFE2D7F64FD007A6670 /* Model.swift */,
 				FB7980612D7AE32D000C2085 /* ViewController.swift */,
 				FB79806B2D7B37CD000C2085 /* RoundedButton.swift */,
 			);
@@ -159,6 +162,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D1306FFF2D7F6507007A6670 /* Model.swift in Sources */,
 				FB7980682D7AE32D000C2085 /* ViewController.swift in Sources */,
 				FB79806C2D7B37CD000C2085 /* RoundedButton.swift in Sources */,
 			);
