@@ -6,22 +6,12 @@
 	objectVersion = 77;
 	objects = {
 
-/* Begin PBXBuildFile section */
-		D1306FFF2D7F6507007A6670 /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1306FFE2D7F64FD007A6670 /* Model.swift */; };
-		FB7980682D7AE32D000C2085 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB7980612D7AE32D000C2085 /* ViewController.swift */; };
-		FB79806C2D7B37CD000C2085 /* RoundedButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB79806B2D7B37CD000C2085 /* RoundedButton.swift */; };
-/* End PBXBuildFile section */
-
 /* Begin PBXFileReference section */
-		D1306FFD2D7F6268007A6670 /* Globals.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Globals.swift; sourceTree = "<group>"; };
-		D1306FFE2D7F64FD007A6670 /* Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Model.swift; sourceTree = "<group>"; };
 		FB26616E2D7979EA00B5136C /* RPNCalculator.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RPNCalculator.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		FB7980612D7AE32D000C2085 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
-		FB79806B2D7B37CD000C2085 /* RoundedButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedButton.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		FB2661B02D799C9A00B5136C /* Exceptions for "RPNCalculator" folder in "RPNCalculator" target */ = {
+		FB6D90AA2D80304C003C9359 /* Exceptions for "RPNCalculator" folder in "RPNCalculator" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
@@ -31,10 +21,10 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		FB2661A92D799C9A00B5136C /* RPNCalculator */ = {
+		FB6D90A12D80304C003C9359 /* RPNCalculator */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				FB2661B02D799C9A00B5136C /* Exceptions for "RPNCalculator" folder in "RPNCalculator" target */,
+				FB6D90AA2D80304C003C9359 /* Exceptions for "RPNCalculator" folder in "RPNCalculator" target */,
 			);
 			path = RPNCalculator;
 			sourceTree = "<group>";
@@ -52,20 +42,10 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		D1306FFC2D7F623A007A6670 /* Utils */ = {
-			isa = PBXGroup;
-			children = (
-				D1306FFD2D7F6268007A6670 /* Globals.swift */,
-			);
-			path = Utils;
-			sourceTree = "<group>";
-		};
 		FB2661652D7979EA00B5136C = {
 			isa = PBXGroup;
 			children = (
-				FB2661A92D799C9A00B5136C /* RPNCalculator */,
-				D1306FFC2D7F623A007A6670 /* Utils */,
-				FB7980692D7AE966000C2085 /* Controllers */,
+				FB6D90A12D80304C003C9359 /* RPNCalculator */,
 				FB26616F2D7979EA00B5136C /* Products */,
 			);
 			sourceTree = "<group>";
@@ -76,16 +56,6 @@
 				FB26616E2D7979EA00B5136C /* RPNCalculator.app */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		FB7980692D7AE966000C2085 /* Controllers */ = {
-			isa = PBXGroup;
-			children = (
-				D1306FFE2D7F64FD007A6670 /* Model.swift */,
-				FB7980612D7AE32D000C2085 /* ViewController.swift */,
-				FB79806B2D7B37CD000C2085 /* RoundedButton.swift */,
-			);
-			path = Controllers;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -104,7 +74,7 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				FB2661A92D799C9A00B5136C /* RPNCalculator */,
+				FB6D90A12D80304C003C9359 /* RPNCalculator */,
 			);
 			name = RPNCalculator;
 			packageProductDependencies = (
@@ -162,9 +132,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D1306FFF2D7F6507007A6670 /* Model.swift in Sources */,
-				FB7980682D7AE32D000C2085 /* ViewController.swift in Sources */,
-				FB79806C2D7B37CD000C2085 /* RoundedButton.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
