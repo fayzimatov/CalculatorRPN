@@ -21,22 +21,35 @@ class CalculatorModel {
                     currentInput = "0"
                 }
             }
-
+            
             
         case "+", "-", "÷", "×":
             if currentInput.isEmpty {
                 currentInput = "0"
             }
-            
             if let last = currentInput.last, ["+", "-", "÷", "×", ","].contains(String(last)) {
                 currentInput.removeLast()
+                currentInput += value
+            } else if let last = currentInput.last, value != "-"  {
+                
+            } else if let last = currentInput.last, last == "(", value == "-" {
+                currentInput += value
+            } else if let last = currentInput.last, last != "(" {
+                currentInput += value
             }
             
-            currentInput += value
+            
+            
+            
             
         case ",":
             if currentInput == "0" {
                 currentInput = "0,"
+            } else if let last = currentInput.last, last == "("{
+                currentInput += "0,"
+            } else if let last = currentInput.last, last == ")" {
+                currentInput.removeLast()
+                currentInput += ")"
             } else {
                 let components = currentInput.components(separatedBy: ["+", "-", "÷", "×"])
                 if let lastNumber = components.last, !lastNumber.contains(",") {
@@ -80,8 +93,13 @@ class CalculatorModel {
             }
             
         case "(":
-            if currentInput == "0" {
+            if  currentInput == "0" {
                 currentInput = "("
+            }  else if let last = currentInput.last, last == "(" || ["+", "-", "÷", "×"].contains(last) {
+                currentInput += "("
+            }  else if let last = currentInput.last, last == ","{
+                currentInput.removeLast()
+                currentInput += "×("
             } else {
                 currentInput += "×("
             }
@@ -90,18 +108,51 @@ class CalculatorModel {
         case ")":
             let openCount = currentInput.filter { $0 == "(" }.count
             let closeCount = currentInput.filter { $0 == ")" }.count
-            
-            if openCount > closeCount {
+            print(currentInput)
+            if let last = currentInput.last, last == "(" {
+                currentInput.removeLast()
+                currentInput += "("
+            } else if let last = currentInput.last, last == "," && openCount > closeCount{
+                currentInput.removeLast()
                 currentInput += ")"
+            } else if let last = currentInput.last, ["+", "-", "÷", "×"].contains(last) && openCount > closeCount {
+                currentInput.removeLast()
+                currentInput += ")"
+            } else if openCount > closeCount {
+                currentInput += ")"
+            } else if let last = currentInput.last, last == "-" && openCount > closeCount{
+                currentInput.removeLast()
+                
             }
             
             
+            
+            
+    
         default:
+            
             if currentInput == "0" {
                 currentInput = value
-            } else {
-                currentInput += value
+            } else if currentInput.suffix(2) == "00" {
+                currentInput.removeLast()
             }
+            else if let last = currentInput.last, last == ")" {
+                currentInput = currentInput + "×" + value
+            }else {
+                if value == "0", let lastChar = currentInput.last,  "+-×÷".contains(lastChar) {
+                    currentInput += value
+                } else if value == "0", currentInput.hasSuffix("0") {
+                    
+                }  else {
+                    currentInput += value
+                }
+            }
+            
+//            
+//            else {
+//                currentInput += value
+//            }
+            
         }
         
         return currentInput
