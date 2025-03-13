@@ -28,17 +28,20 @@ class CalculatorModel {
                 currentInput = "0"
             }
             if let last = currentInput.last, ["+", "-", "÷", "×", ","].contains(String(last)) {
-                currentInput.removeLast()
-                currentInput += value
-            } else if let last = currentInput.last, value != "-"  {
+                if last == "-" && currentInput.suffix(2) == "(-" && value != "-" {
+                    print(currentInput.suffix(2))
+                    currentInput.removeLast()
+                } else {
+                    currentInput.removeLast()
+                    currentInput += value
+                }
                 
             } else if let last = currentInput.last, last == "(", value == "-" {
                 currentInput += value
             } else if let last = currentInput.last, last != "(" {
                 currentInput += value
             }
-            
-            
+
             
             
             
@@ -48,8 +51,7 @@ class CalculatorModel {
             } else if let last = currentInput.last, last == "("{
                 currentInput += "0,"
             } else if let last = currentInput.last, last == ")" {
-                currentInput.removeLast()
-                currentInput += ")"
+                currentInput += "×0,"
             } else {
                 let components = currentInput.components(separatedBy: ["+", "-", "÷", "×"])
                 if let lastNumber = components.last, !lastNumber.contains(",") {
@@ -64,33 +66,28 @@ class CalculatorModel {
             print("nil")
             
         case "±":
-            if currentInput == "0" {
-                return currentInput
-            }
             
             let operators = ["+", "-", "÷", "×"]
             let hasOperators = operators.contains { currentInput.contains($0) }
             
-            if !hasOperators {
-                if currentInput.hasPrefix("-") {
-                    currentInput.removeFirst()
-                } else {
-                    currentInput = "-" + currentInput
-                }
-            } else {
-                var components = currentInput.components(separatedBy: CharacterSet(charactersIn: "+-÷×"))
-                if var lastNumber = components.last {
-                    if lastNumber.hasPrefix("-") {
-                        lastNumber.removeFirst()
-                    } else {
-                        lastNumber = "-" + lastNumber
-                    }
-                    
-                    if let range = currentInput.range(of: components.last ?? "", options: .backwards) {
-                        currentInput.replaceSubrange(range, with: lastNumber)
-                    }
-                }
+            let result = currentInput.split { ["+", "-", "÷", "×"].contains($0) }
+            
+            
+            
+            if currentInput == "0" {
+                return currentInput
+            } else if let lastValue = result.last {
+                let newNum = "(-\(lastValue))"
+                currentInput = currentInput.replacingOccurrences(of: lastValue, with: newNum)
+                print(currentInput)
             }
+            
+            
+            
+            
+            
+            
+            
             
         case "(":
             if  currentInput == "0" {
@@ -116,8 +113,13 @@ class CalculatorModel {
                 currentInput.removeLast()
                 currentInput += ")"
             } else if let last = currentInput.last, ["+", "-", "÷", "×"].contains(last) && openCount > closeCount {
-                currentInput.removeLast()
-                currentInput += ")"
+                print(currentInput.suffix(2))
+                if currentInput.suffix(2) == "(-" {
+                    currentInput.removeLast()
+                } else {
+                    currentInput.removeLast()
+                    currentInput += ")"
+                }
             } else if openCount > closeCount {
                 currentInput += ")"
             } else if let last = currentInput.last, last == "-" && openCount > closeCount{
@@ -126,39 +128,82 @@ class CalculatorModel {
             }
             
             
-            
-            
-    
         default:
+            let result = currentInput.split { ["+", "-", "÷", "×"].contains($0) }
+            print("second \(result)")
+            
+            let lastChar = currentInput.last
+            print(lastChar ?? "nil")
             
             if currentInput == "0" {
                 currentInput = value
-            } else if currentInput.suffix(2) == "00" {
-                currentInput.removeLast()
             }
             else if let last = currentInput.last, last == ")" {
-                currentInput = currentInput + "×" + value
-            }else {
-                if value == "0", let lastChar = currentInput.last,  "+-×÷".contains(lastChar) {
-                    currentInput += value
-                } else if value == "0", currentInput.hasSuffix("0") {
-                    
-                }  else {
-                    currentInput += value
-                }
+                currentInput += "×" + value
             }
-            
-//            
-//            else {
-//                currentInput += value
-//            }
-            
+            else if value == "0", let lastChar = currentInput.last, "+×÷".contains(lastChar) {
+                // "+", "×", "÷" dan keyin "0" qo'shishga ruxsat beramiz
+                currentInput += value
+            }
+            else if value == "0", let lastChar = currentInput.last, lastChar == "-",
+                    let secondLast = currentInput.dropLast().last, !"0123456789".contains(secondLast) {
+                // "-0" bo'lishi mumkin, lekin "00", "-00" yoki undan ko‘pi bo‘lishi mumkin emas
+                print("0 ni - dan keyin kiritish cheklangan")
+                break
+            }
+            else if value == "0", result.last?.contains(",") == true {
+                currentInput += value
+            }
+            else if let lastChar = currentInput.dropLast().last, let last = currentInput.last,
+                    value == "0", !result[result.count - 1].contains(","),
+                    "+-×÷".contains(lastChar), last == "0" {
+                // "00", "-00", "+00" yoki boshqa operator bilan bog'langan "0" larni oldini olamiz
+                print("Ketma-ket 0 yozish cheklangan")
+                break
+            } else if  currentInput.suffix(2) == "(0" {
+                currentInput.removeLast()
+                currentInput += value
+            }
+            else {
+                currentInput += value
+            }
         }
+            
         
         return currentInput
     }
     
-    
+    func splitNumbers(string: String) {
+        
+    }
+    func toggleSign() {
+        guard !currentInput.isEmpty else { return }
+        
+        // Ajratish uchun operatorlar to'plami
+        let operators = CharacterSet(charactersIn: "+-×÷")
+        
+        // Stringni operatorlar bo'yicha bo'laklarga ajratamiz
+        var components = currentInput.components(separatedBy: operators)
+        
+        // Oxirgi raqamni topamiz
+        if let lastNumber = components.last, !lastNumber.isEmpty {
+            let newNumber: String
+            
+            if lastNumber.hasPrefix("(-") && lastNumber.hasSuffix(")") {
+                // Agar oldin o'zgartirilgan bo'lsa, asl holatga qaytaramiz
+                newNumber = String(lastNumber.dropFirst(2).dropLast(1))
+            } else {
+                // Aks holda, manfiy qavs ichiga olamiz
+                newNumber = "(-" + lastNumber + ")"
+            }
+            
+            // Eski sonni yangi qiymat bilan almashtiramiz
+            currentInput = currentInput.replacingOccurrences(of: lastNumber, with: newNumber)
+        }
+        
+        print(currentInput) // Test qilish uchun chiqarish
+    }
+
 //    private func formatResult(_ result: Double) -> String {
 //        if result.truncatingRemainder(dividingBy: 1) == 0 {
 //            return String(Int(result))
