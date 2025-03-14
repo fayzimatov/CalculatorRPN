@@ -32,7 +32,7 @@ class ViewController: UIViewController {
     private func getButtonColor(for title: String) -> UIColor {
             switch title {
             case "(", ")", "%","±","⌫":
-                return UIColor(named: "customLightGray") ?? .gray
+                return UIColor(named: "customLightGray") ?? .gray // enum with colors or extenxion with colors
             case "÷", "×", "-", "+", "=":
                 return UIColor(named: "customOrange") ?? .orange
             default:
@@ -42,21 +42,30 @@ class ViewController: UIViewController {
 
     
     
-    
+    // MARK: - ScrollView for inputLabel
+    private let scrollView: UIScrollView = {
+        let scrollView = UIScrollView()
+        scrollView.showsHorizontalScrollIndicator = false
+        scrollView.bounces = false
+        return scrollView
+    }()
+
     private let inputLabel: UILabel = {
         let label = UILabel()
         label.text = "0"
         label.textAlignment = .right
-        label.font = UIFont.systemFont(ofSize: 80, weight: .medium)
+        label.font = .boldSystemFont(ofSize: 60)
         label.textColor = .white
+        label.backgroundColor = .red
         label.minimumScaleFactor = 0.5
-        label.adjustsFontSizeToFitWidth = true
-        
-        label.backgroundColor = UIColor(.black)
+//        label.adjustsFontSizeToFitWidth = true
+        label.numberOfLines = 1
         return label
     }()
     
     
+   
+
     private let vStackView: UIStackView = {
         let vStackView = UIStackView()
         vStackView.axis = .vertical
@@ -64,6 +73,7 @@ class ViewController: UIViewController {
         vStackView.spacing = UIConstants.intervalSpacingStackView
         return vStackView
     }()
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -75,7 +85,8 @@ class ViewController: UIViewController {
     //MARK: - SetupUI
     private func setupUI() {
         view.backgroundColor = UIColor(resource: .customBlack)
-        view.addSubview(inputLabel)
+        view.addSubview(scrollView)
+        scrollView.addSubview(inputLabel)
         view.addSubview(vStackView)
         
         for row in buttonElements {
@@ -97,26 +108,34 @@ class ViewController: UIViewController {
     
     //MARK: - setupConstraints
     private func setupConstraints() {
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        inputLabel.translatesAutoresizingMaskIntoConstraints = false
         vStackView.translatesAutoresizingMaskIntoConstraints = false
+        
         NSLayoutConstraint.activate([
+            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: UIConstants.leftSpacingVStackview),
+            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -UIConstants.leftSpacingVStackview),
+            scrollView.bottomAnchor.constraint(equalTo: vStackView.topAnchor, constant: UIConstants.inputLabelBottom),
+            scrollView.heightAnchor.constraint(equalToConstant: 100),
+            
+            // InputLabel внутри ScrollView
+            inputLabel.topAnchor.constraint(equalTo: scrollView.topAnchor),
+            inputLabel.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
+            inputLabel.heightAnchor.constraint(equalTo: scrollView.heightAnchor),
+            inputLabel.widthAnchor.constraint(greaterThanOrEqualTo: scrollView.widthAnchor),
+            
+            // Кнопки
             vStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: UIConstants.leftSpacingVStackview),
             vStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -UIConstants.leftSpacingVStackview),
             vStackView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: UIConstants.vStackViewBottom),
             vStackView.heightAnchor.constraint(equalToConstant: UIConstants.vStackViewHeight)
         ])
-    
-        inputLabel.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            inputLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: UIConstants.leftSpacingVStackview),
-            inputLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -UIConstants.leftSpacingVStackview),
-            inputLabel.bottomAnchor.constraint(equalTo: vStackView.topAnchor, constant: UIConstants.inputLabelBottom)
-        ])
     }
+        
+        
 
     
-
-    
-    
+    // move to UIButton extension
 //MARK: - createButton
     private func createButton(title: String,buttonColor: UIColor) -> UIButton {
         let button = UIButton(type: .system)
@@ -137,20 +156,25 @@ class ViewController: UIViewController {
     //MARK: - @objc functions
     @objc private func buttonTapped(_ sender: UIButton) {
         guard let title = sender.currentTitle else { return }
-//        if title == "AC" {
-//            inputLabel.text = "0"
-//        } else {
-//            inputLabel.text = (inputLabel.text == "0") ? title : (inputLabel.text ?? "") + title
-//        }
-        inputLabel.text  = model.inputSource(value: title)
-//        print(title)
+        let newText = model.inputSource(value: title)
+        updateInputLabel(text: newText)
         
     }
    
     
     
     
-    //MARK: - Input Source
+    private func updateInputLabel(text: String) {
+        inputLabel.text = text
+        
+        // Layout-ni yangilash
+        inputLabel.sizeToFit()
+        scrollView.contentSize = CGSize(width: inputLabel.frame.width, height: scrollView.frame.height)
+
+        // Scroll-ni oxiriga surish
+        let offsetX = max(scrollView.contentSize.width - scrollView.bounds.width, 0)
+        scrollView.setContentOffset(CGPoint(x: offsetX, y: 0), animated: false)
+    }
     
      
 }

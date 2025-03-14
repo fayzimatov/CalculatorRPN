@@ -76,18 +76,9 @@ class CalculatorModel {
             
             if currentInput == "0" {
                 return currentInput
-            } else if let lastValue = result.last {
-                let newNum = "(-\(lastValue))"
-                currentInput = currentInput.replacingOccurrences(of: lastValue, with: newNum)
-                print(currentInput)
+            } else  {
+                currentInput = negateLastNumber(in: commaToDot(in: currentInput))
             }
-            
-            
-            
-            
-            
-            
-            
             
         case "(":
             if  currentInput == "0" {
@@ -176,34 +167,32 @@ class CalculatorModel {
     func splitNumbers(string: String) {
         
     }
-    func toggleSign() {
-        guard !currentInput.isEmpty else { return }
+    
+    func commaToDot(in text: String) -> String {
+        var result = text.split { ["+", "-", "÷", "×"].contains(String($0)) }.map { String($0) }
+        var modifiedText = text
         
-        // Ajratish uchun operatorlar to'plami
-        let operators = CharacterSet(charactersIn: "+-×÷")
-        
-        // Stringni operatorlar bo'yicha bo'laklarga ajratamiz
-        var components = currentInput.components(separatedBy: operators)
-        
-        // Oxirgi raqamni topamiz
-        if let lastNumber = components.last, !lastNumber.isEmpty {
-            let newNumber: String
-            
-            if lastNumber.hasPrefix("(-") && lastNumber.hasSuffix(")") {
-                // Agar oldin o'zgartirilgan bo'lsa, asl holatga qaytaramiz
-                newNumber = String(lastNumber.dropFirst(2).dropLast(1))
-            } else {
-                // Aks holda, manfiy qavs ichiga olamiz
-                newNumber = "(-" + lastNumber + ")"
-            }
-            
-            // Eski sonni yangi qiymat bilan almashtiramiz
-            currentInput = currentInput.replacingOccurrences(of: lastNumber, with: newNumber)
+        if let last = result.last, last.contains(",") {
+            let replacedLast = last.replacingOccurrences(of: ",", with: ".")
+            modifiedText = text.replacingOccurrences(of: last, with: replacedLast, options: .backwards)
         }
-        
-        print(currentInput) // Test qilish uchun chiqarish
+        print(modifiedText)
+        return modifiedText
     }
 
+    func negateLastNumber(in text: String) -> String {
+        var components = text.split { ["+", "-", "÷", "×"].contains(String($0)) }.map { String($0) }
+        
+        guard !components.isEmpty, let lastNumber = components.last, let number = Double(lastNumber) else {
+            return text
+        }
+        
+        let negatedNumber = "(-\(abs(number)))" // Sonni -1 ga ko'paytirib qavs ichiga olamiz
+        let modifiedText = text.replacingOccurrences(of: lastNumber, with: negatedNumber, options: .backwards)
+        
+        return modifiedText
+    }
+    
 //    private func formatResult(_ result: Double) -> String {
 //        if result.truncatingRemainder(dividingBy: 1) == 0 {
 //            return String(Int(result))
