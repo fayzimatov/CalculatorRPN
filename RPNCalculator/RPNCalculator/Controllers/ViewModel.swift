@@ -64,7 +64,9 @@ class CalculatorModel {
             }
             
         case "=":
-            print("nil")
+            currentInput = balanceBrackets(in: currentInput)
+            currentInput = simplifyBrackets(in: currentInput)
+            
             
         case "±":
             let operators = ["+", "-", "÷", "×"]
@@ -259,128 +261,39 @@ class CalculatorModel {
     }
     
     
-
-//    func toggleSign(in text: String) -> String {
-//        print(text)
-//        print(toggle)
-//        let result = currentInput.split { ["+", "-", "÷", "×"].contains($0) }
-//        var value = text
-//        guard let lastChar = value.last else { return "" }
-//        
-//        
-//        if value.dropLast(1).last == "-", value.count > 2 {
-//            value.removeLast(2)
-//            value = value + "+\(lastChar)"
-//            return value
-//        }
-//        if let last = result.last, toggle {
-//            toggle = false
-//            value.removeLast(last.count)
-//            value = value + "(-\(last))"
-//            return value
-//        } else if !toggle {
-//            if let last = splitExpression(value).last {
-//                print(splitExpression(value).count)
-//                print(splitExpression(value).last)
-//                print(value,last.count)
-//                print(last)
-//                var res = last
-//                print(res)
-//                toggle = true
-//                print(value.removeLast(last.count))
-//                print(res.removeLast())
-//                print(value)
-//                value = value + String(res.suffix(res.count - 2))
-//                print(value)
-//                return value
-//            }
-//           
-//        } else {
-//            print("ishlamadi")
-//        }
-//        
-//    
-//        return ""
-//    }
-//    
-//    
-//
-//    
-//    func splitExpression(_ input: String) -> [String] {
-//        var result: [String] = []
-//        var number = ""
-//        var lastOperator: Character? = nil
-//        var insideBrackets = false
-//
-//        for (index, char) in input.enumerated() {
-//            if char == "(" {
-//                insideBrackets = true
-//                number.append(char)
-//            } else if char == ")" {
-//                insideBrackets = false
-//                number.append(char)
-//            } else if ["+", "-", "÷", "×"].contains(char), !insideBrackets {
-//                if char == "-" && (index == 0 || ["+", "-", "÷", "×", "("].contains(lastOperator)) {
-//                    number.append(char)
-//                } else {
-//                    if !number.isEmpty {
-//                        result.append(number)
-//                    }
-//                    number = ""
-//                    lastOperator = char
-//                }
-//            } else {
-//                number.append(char)
-//                lastOperator = nil
-//            }
-//        }
-//
-//        if !number.isEmpty {
-//            result.append(number)
-//        }
-//
-//        // **📌 Shu joyda (X) butun element sifatida turganini tekshiramiz**
-//        if result.count == 1, result[0].first == "(", result[0].last == ")" {
-//            return [result[0]]  // **✅ Butun elementni alohida qaytaramiz**
-//        }
-//
-//        return result
-//    }
-
+    func simplifyBrackets(in expression: String) -> String {
+        var result = expression
+        
+        // Keraksiz tashqi qavslarni olib tashlash
+        while result.first == "(" && result.last == ")" {
+            let trimmed = String(result.dropFirst().dropLast())
+            
+            // Yangi natija ichida ochilgan va yopilgan qavslar soni teng bo‘lsa, davom etamiz
+            let openCount = trimmed.filter { $0 == "(" }.count
+            let closeCount = trimmed.filter { $0 == ")" }.count
+            
+            if openCount == closeCount {
+                result = trimmed
+            } else {
+                break
+            }
+        }
+        
+        return result
+    }
+    
+    func balanceBrackets(in expressesion: String) -> String {
+        let openCount = currentInput.filter { $0 == "(" }.count
+        let closeCount = currentInput.filter { $0 == ")" }.count
+        
+        if expressesion.last != "(" && !["+", "-", "÷", "×"].contains(expressesion.last)  {
+            let missingCloseBrackets = max(0, openCount - closeCount) // **Manfiy bo‘lishi oldini olamiz**
+            return  expressesion + String(repeating: ")", count: missingCloseBrackets)
+        }
+       
+        return expressesion
+        
+    }
     
     
-    
-    
-//    func commaToDot(in text: String) -> String {
-//        var result = text.split { ["+", "-", "÷", "×"].contains(String($0)) }.map { String($0) }
-//        var modifiedText = text
-//        
-//        if let last = result.last, last.contains(",") {
-//            let replacedLast = last.replacingOccurrences(of: ",", with: ".")
-//            modifiedText = text.replacingOccurrences(of: last, with: replacedLast, options: .backwards)
-//        }
-//        print(modifiedText)
-//        return modifiedText
-//    }
-//
-//    func negateLastNumber(in text: String) -> String {
-//        var components = text.split { ["+", "-", "÷", "×"].contains(String($0)) }.map { String($0) }
-//        
-//        guard !components.isEmpty, let lastNumber = components.last, let number = Double(lastNumber) else {
-//            return text
-//        }
-//        
-//        let negatedNumber = "(-\(abs(number)))" // Sonni -1 ga ko'paytirib qavs ichiga olamiz
-//        let modifiedText = text.replacingOccurrences(of: lastNumber, with: negatedNumber, options: .backwards)
-//        
-//        return modifiedText
-//    }
-    
-//    private func formatResult(_ result: Double) -> String {
-//        if result.truncatingRemainder(dividingBy: 1) == 0 {
-//            return String(Int(result))
-//        } else {
-//            return String(result).replacingOccurrences(of: ".", with: ",")
-//        }
-//    }
 }
