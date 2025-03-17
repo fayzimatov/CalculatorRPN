@@ -56,8 +56,7 @@ class ViewController: UIViewController {
         label.textAlignment = .right
         label.font = .boldSystemFont(ofSize: 60)
         label.textColor = .white
-        label.backgroundColor = .red
-        label.minimumScaleFactor = 0.5
+//        label.minimumScaleFactor = 0.5
 //        label.adjustsFontSizeToFitWidth = true
         label.numberOfLines = 1
         return label
