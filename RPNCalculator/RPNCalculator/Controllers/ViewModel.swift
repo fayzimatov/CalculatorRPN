@@ -121,10 +121,13 @@ class CalculatorModel {
         default:
             let result = currentInput.split { ["+", "-", "÷", "×"].contains($0) }
             
-            let lastChar = currentInput.last
+            
             
             if currentInput == "0" {
                 currentInput = value
+            } else if splitExpression(currentInput).last == "0" {
+                currentInput.removeLast()
+                currentInput +=  value
             }
             else if let last = currentInput.last, last == ")" {
                 currentInput += "×" + value
