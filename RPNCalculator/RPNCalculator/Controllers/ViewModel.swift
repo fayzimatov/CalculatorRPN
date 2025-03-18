@@ -65,7 +65,7 @@ class CalculatorModel {
         case "=":
             currentInput = balanceBrackets(in: currentInput)
             currentInput = simplifyBrackets(in: currentInput)
-            
+            currentInput = cleanExpression(from: currentInput)
             
         case "±":
             let operators = ["+", "-", "÷", "×"]
@@ -205,7 +205,7 @@ class CalculatorModel {
     func toggleSign(in text: String) -> String {
         var value = text
         let result = splitExpression(value)
-
+        print(result)
         let openCount = currentInput.filter { $0 == "(" }.count
         let closeCount = currentInput.filter { $0 == ")" }.count
         
@@ -282,6 +282,28 @@ class CalculatorModel {
         return expressesion
         
     }
+    
+    
+    
+    
+    
+    func cleanExpression(from expression: String) -> String {
+        var result = ""
+        var previousChar: Character?
+        
+        for (index, char) in expression.enumerated() {
+            if char == "," {
+                if index == expression.count - 1 || !expression[expression.index(expression.startIndex, offsetBy: index + 1)].isNumber {
+                    continue
+                }
+            }
+            result.append(char)
+            previousChar = char
+        }
+        
+        return result
+    }
+
     
     
 }
