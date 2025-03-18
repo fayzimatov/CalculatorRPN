@@ -30,7 +30,6 @@ class CalculatorModel {
             }
             if let last = currentInput.last, ["+", "-", "÷", "×", ","].contains(String(last)) {
                 if last == "-" && currentInput.suffix(2) == "(-" && value != "-" {
-                    print(currentInput.suffix(2))
                     currentInput.removeLast()
                 } else {
                     currentInput.removeLast()
@@ -98,7 +97,6 @@ class CalculatorModel {
         case ")":
             let openCount = currentInput.filter { $0 == "(" }.count
             let closeCount = currentInput.filter { $0 == ")" }.count
-            print(currentInput)
             if let last = currentInput.last, last == "(" {
                 currentInput.removeLast()
                 currentInput += "("
@@ -106,7 +104,6 @@ class CalculatorModel {
                 currentInput.removeLast()
                 currentInput += ")"
             } else if let last = currentInput.last, ["+", "-", "÷", "×"].contains(last) && openCount > closeCount {
-                print(currentInput.suffix(2))
                 if currentInput.suffix(2) == "(-" {
                     currentInput.removeLast()
                 } else {
@@ -123,10 +120,8 @@ class CalculatorModel {
             
         default:
             let result = currentInput.split { ["+", "-", "÷", "×"].contains($0) }
-            print("second \(result)")
             
             let lastChar = currentInput.last
-            print(lastChar ?? "nil")
             
             if currentInput == "0" {
                 currentInput = value
@@ -141,7 +136,6 @@ class CalculatorModel {
             else if value == "0", let lastChar = currentInput.last, lastChar == "-",
                     let secondLast = currentInput.dropLast().last, !"0123456789".contains(secondLast) {
                 // "-0" bo'lishi mumkin, lekin "00", "-00" yoki undan ko‘pi bo‘lishi mumkin emas
-                print("0 ni - dan keyin kiritish cheklangan")
                 break
             }
             else if value == "0", result.last?.contains(",") == true {
@@ -150,8 +144,6 @@ class CalculatorModel {
             else if let lastChar = currentInput.dropLast().last, let last = currentInput.last,
                     value == "0", !result[result.count - 1].contains(","),
                     "+-×÷".contains(lastChar), last == "0" {
-                // "00", "-00", "+00" yoki boshqa operator bilan bog'langan "0" larni oldini olamiz
-                print("Ketma-ket 0 yozish cheklangan")
                 break
             } else if  currentInput.suffix(2) == "(0" {
                 currentInput.removeLast()
@@ -216,39 +208,34 @@ class CalculatorModel {
         
         guard let last = result.last else { return value }
         guard let lastCurrent = currentInput.last,!["+", "-", "÷", "×", "(", ")"].contains(last) else { return value}
-        print(lastCurrent)
+
         if ["+", "-", "÷", "×", "("].contains(lastCurrent) || openCount > closeCount {
             return value
         } else {
-            // **🔹 Agar oxiridan oldingi belgi "-" bo‘lsa, uni "+" ga o'zgartirish**
             if value.count > last.count, value.dropLast(last.count + 1).last == "-" {
-                let prefix = value.dropLast(last.count + 1) // Oldingi qismi
-                value = prefix + "+" + last // -X -> +X
+                let prefix = value.dropLast(last.count + 1)
+                value = prefix + "+" + last
                 return value
             }
             
-            // **🔹 Agar (-X) ko‘rinishida bo‘lsa, uni X ga o‘zgartiramiz**
             if last.first == "(", last.last == ")", last.dropFirst().first == "-" {
                 toggle = true
                 let newLast = String(last.dropFirst(2).dropLast()) // (-X) -> X
                 value.removeLast(last.count)
                 value.append(newLast)
             }
-            // **🔹 Agar (X) bo‘lsa, (-X) qilib o‘zgartiramiz**
             else if last.first == "(" {
                 toggle = false
                 let newLast = "(-" + last.dropFirst() // (X) -> (-X)
                 value.removeLast(last.count)
                 value.append(newLast)
             }
-            // **🔹 Agar -X bo‘lsa, uni +X ga o‘zgartiramiz**
             else if last.first == "-" {
                 toggle = true
                 let newLast = String(last.dropFirst()) // -X -> X
                 value.removeLast(last.count)
                 value.append(newLast)
             }
-            // **🔹 Agar oddiy X bo‘lsa, (-X) qilish**
             else {
                 toggle = false
                 let newLast = "(-" + last + ")" // X -> (-X)
@@ -264,11 +251,9 @@ class CalculatorModel {
     func simplifyBrackets(in expression: String) -> String {
         var result = expression
         
-        // Keraksiz tashqi qavslarni olib tashlash
         while result.first == "(" && result.last == ")" {
             let trimmed = String(result.dropFirst().dropLast())
             
-            // Yangi natija ichida ochilgan va yopilgan qavslar soni teng bo‘lsa, davom etamiz
             let openCount = trimmed.filter { $0 == "(" }.count
             let closeCount = trimmed.filter { $0 == ")" }.count
             
@@ -287,7 +272,7 @@ class CalculatorModel {
         let closeCount = currentInput.filter { $0 == ")" }.count
         
         if expressesion.last != "(" && !["+", "-", "÷", "×"].contains(expressesion.last)  {
-            let missingCloseBrackets = max(0, openCount - closeCount) // **Manfiy bo‘lishi oldini olamiz**
+            let missingCloseBrackets = max(0, openCount - closeCount)
             return  expressesion + String(repeating: ")", count: missingCloseBrackets)
         }
        
