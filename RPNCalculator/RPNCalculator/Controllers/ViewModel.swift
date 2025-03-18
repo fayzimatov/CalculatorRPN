@@ -162,7 +162,7 @@ class CalculatorModel {
     }
     
     
-    func splitExpression(_ input: String) -> [String] {
+    private func splitExpression(_ input: String) -> [String] {
         var result: [String] = []
         var number = ""
         var lastOperator: Character? = nil
@@ -202,7 +202,7 @@ class CalculatorModel {
         return result
     }
 
-    func toggleSign(in text: String) -> String {
+    private func toggleSign(in text: String) -> String {
         var value = text
         let result = splitExpression(value)
         print(result)

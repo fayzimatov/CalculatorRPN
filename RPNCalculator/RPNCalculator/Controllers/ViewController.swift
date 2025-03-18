@@ -159,9 +159,7 @@ class ViewController: UIViewController {
         updateInputLabel(text: newText)
         
     }
-   
-    
-    
+
     
     private func updateInputLabel(text: String) {
         inputLabel.text = text
