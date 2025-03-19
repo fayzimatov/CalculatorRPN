@@ -8,7 +8,14 @@
 import Foundation
 class CalculatorModel {
     
-    private var currentInput: String = "0"
+    
+    private(set) var currentInput: String = "0"
+
+    func resetInput() {
+        currentInput = "0"
+    }
+    
+        var resultInput: String?
     private var toggle = true
     
     func inputSource(value: String) -> String {
@@ -69,8 +76,8 @@ class CalculatorModel {
             
             let tokens = RPNFunctions.tokenizeExpression(currentInput)
             let rpnExpression = RPNFunctions.parseToRPN(to: tokens)
-            
-            currentInput = rpnExpression.joined(separator: " ")
+            resultInput = currentInput
+            currentInput = RPNFunctions.calculateRPN(to: rpnExpression)
             
         case "±":
             let operators = ["+", "-", "÷", "×"]
@@ -124,36 +131,80 @@ class CalculatorModel {
             
             
         default:
+//            let result = currentInput.split { ["+", "-", "÷", "×"].contains($0) }
+//            
+//            
+//            
+//            if currentInput == "0" {
+//                currentInput = value
+//            } else if splitExpression(currentInput).last == "0" {
+//                currentInput.removeLast()
+//                currentInput +=  value
+//            }
+//            else if let last = currentInput.last, last == ")" {
+//                currentInput += "×" + value
+//            }
+//            else if value == "0", let lastChar = currentInput.last, "+×÷".contains(lastChar) {
+//                // "+", "×", "÷" dan keyin "0" qo'shishga ruxsat beramiz
+//                currentInput += value
+//            }
+//            else if value == "0", let lastChar = currentInput.last, lastChar == "-",
+//                    let secondLast = currentInput.dropLast().last, !"0123456789".contains(secondLast) {
+//                // "-0" bo'lishi mumkin, lekin "00", "-00" yoki undan ko‘pi bo‘lishi mumkin emas
+//                break
+//            }
+//            else if value == "0", result.last?.contains(",") == true {
+//                currentInput += value
+//            }
+//            else if let lastChar = currentInput.dropLast().last, let last = currentInput.last,
+//                    value == "0", !result[result.count - 1].contains(","),
+//                    "+-×÷".contains(lastChar), last == "0" {
+//                break
+//            } else if  currentInput.suffix(2) == "(0" {
+//                currentInput.removeLast()
+//                currentInput += value
+//            }
+//            else {
+//                currentInput += value
+//            }
+//        }
+//            
+//
+            
+            
+        
             let result = currentInput.split { ["+", "-", "÷", "×"].contains($0) }
-            
-            
-            
+
             if currentInput == "0" {
                 currentInput = value
-            } else if splitExpression(currentInput).last == "0" {
+            }
+            else if let last = splitExpression(currentInput).last, last == "0" {
                 currentInput.removeLast()
-                currentInput +=  value
+                currentInput += value
             }
             else if let last = currentInput.last, last == ")" {
                 currentInput += "×" + value
             }
             else if value == "0", let lastChar = currentInput.last, "+×÷".contains(lastChar) {
-                // "+", "×", "÷" dan keyin "0" qo'shishga ruxsat beramiz
+                // Разрешаем "0" после оператора "+", "×", "÷"
                 currentInput += value
             }
-            else if value == "0", let lastChar = currentInput.last, lastChar == "-",
+            else if value == "0", currentInput.count > 1,
+                    let lastChar = currentInput.last, lastChar == "-",
                     let secondLast = currentInput.dropLast().last, !"0123456789".contains(secondLast) {
-                // "-0" bo'lishi mumkin, lekin "00", "-00" yoki undan ko‘pi bo‘lishi mumkin emas
+                // Разрешаем "-0", но запрещаем "-00"
                 break
             }
-            else if value == "0", result.last?.contains(",") == true {
+            else if value == "0", let lastElement = result.last, lastElement.contains(",") {
+                // Разрешаем "0" после запятой (например, "3,0")
                 currentInput += value
             }
             else if let lastChar = currentInput.dropLast().last, let last = currentInput.last,
-                    value == "0", !result[result.count - 1].contains(","),
+                    value == "0", !result.isEmpty, result.last?.contains(",") == false,
                     "+-×÷".contains(lastChar), last == "0" {
                 break
-            } else if  currentInput.suffix(2) == "(0" {
+            }
+            else if currentInput.suffix(2) == "(0" {
                 currentInput.removeLast()
                 currentInput += value
             }
@@ -161,8 +212,6 @@ class CalculatorModel {
                 currentInput += value
             }
         }
-            
-        
         return currentInput
     }
     

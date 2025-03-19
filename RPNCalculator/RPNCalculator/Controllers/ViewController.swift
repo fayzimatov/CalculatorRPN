@@ -43,7 +43,7 @@ class ViewController: UIViewController {
     
     
     // MARK: - ScrollView for inputLabel
-    private let scrollView: UIScrollView = {
+    private let scrollViewInputLabel: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.showsHorizontalScrollIndicator = false
         scrollView.bounces = false
@@ -55,13 +55,25 @@ class ViewController: UIViewController {
         label.text = "0"
         label.textAlignment = .right
         label.font = .boldSystemFont(ofSize: 60)
-        label.textColor = .white
-//        label.minimumScaleFactor = 0.5
-//        label.adjustsFontSizeToFitWidth = true
-        label.numberOfLines = 1
+        label.textColor = .customLabel
         return label
     }()
     
+    
+    private let scrollViewResultLabel: UIScrollView = {
+        let scrollView = UIScrollView()
+        scrollView.showsHorizontalScrollIndicator = false
+        scrollView.bounces = false
+        return scrollView
+    }()
+    
+    private let resultLabel: UILabel = {
+        let label = UILabel()
+        label.textAlignment = .right
+        label.font = .systemFont(ofSize: 30)
+        label.textColor = .customLightGray
+        return label
+    }()
     
    
 
@@ -81,11 +93,41 @@ class ViewController: UIViewController {
     }
 
 
+    
+    //MARK: - @objc functions
+    @objc private func buttonTapped(_ sender: UIButton) {
+        guard let title = sender.currentTitle else { return }
+        let newText = model.inputSource(value: title)
+        updateInputLabel(text: newText)
+        resultLabel.text = model.resultInput
+        updateResultLabel()
+    }
+
+    
+    @objc private func buttonLongPressed(_ sender: UILongPressGestureRecognizer) {
+        if sender.state == .began {
+            guard let button = sender.view as? UIButton, let title = button.currentTitle else { return }
+            print("Долгое нажатие на кнопку: \(title)")
+            if title == "⌫" {
+                inputLabel.text = "0"
+                model.resetInput()
+            } else {
+                let newText = model.inputSource(value: title)
+                updateInputLabel(text: newText)
+                resultLabel.text = model.resultInput
+                updateResultLabel()
+            }
+        }
+    }
+    
+    
     //MARK: - SetupUI
     private func setupUI() {
         view.backgroundColor = UIColor(resource: .customBlack)
-        view.addSubview(scrollView)
-        scrollView.addSubview(inputLabel)
+        view.addSubview(scrollViewInputLabel)
+        view.addSubview(scrollViewResultLabel)
+        scrollViewInputLabel.addSubview(inputLabel)
+        scrollViewResultLabel.addSubview(resultLabel)
         view.addSubview(vStackView)
         
         for row in buttonElements {
@@ -107,21 +149,32 @@ class ViewController: UIViewController {
     
     //MARK: - setupConstraints
     private func setupConstraints() {
-        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        scrollViewInputLabel.translatesAutoresizingMaskIntoConstraints = false
+        scrollViewResultLabel.translatesAutoresizingMaskIntoConstraints = false
         inputLabel.translatesAutoresizingMaskIntoConstraints = false
+        resultLabel.translatesAutoresizingMaskIntoConstraints = false
         vStackView.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
-            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: UIConstants.leftSpacingVStackview),
-            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -UIConstants.leftSpacingVStackview),
-            scrollView.bottomAnchor.constraint(equalTo: vStackView.topAnchor, constant: UIConstants.inputLabelBottom),
-            scrollView.heightAnchor.constraint(equalToConstant: 100),
+            scrollViewInputLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: UIConstants.leftSpacingVStackview),
+            scrollViewInputLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -UIConstants.leftSpacingVStackview),
+            scrollViewInputLabel.bottomAnchor.constraint(equalTo: vStackView.topAnchor, constant: UIConstants.inputLabelBottom),
+            scrollViewInputLabel.heightAnchor.constraint(equalToConstant: 50),
+            
+            
+            scrollViewResultLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: UIConstants.leftSpacingVStackview),
+            scrollViewResultLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -UIConstants.leftSpacingVStackview),
+            scrollViewResultLabel.bottomAnchor.constraint(equalTo: inputLabel.topAnchor, constant: UIConstants.inputLabelBottom),
+            scrollViewResultLabel.heightAnchor.constraint(equalToConstant: 30),
+            
+            
+            resultLabel.heightAnchor.constraint(equalTo: scrollViewResultLabel.heightAnchor),
+            resultLabel.widthAnchor.constraint(greaterThanOrEqualTo: scrollViewResultLabel.widthAnchor),
+            
             
             // InputLabel внутри ScrollView
-            inputLabel.topAnchor.constraint(equalTo: scrollView.topAnchor),
-            inputLabel.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
-            inputLabel.heightAnchor.constraint(equalTo: scrollView.heightAnchor),
-            inputLabel.widthAnchor.constraint(greaterThanOrEqualTo: scrollView.widthAnchor),
+            inputLabel.heightAnchor.constraint(equalTo: scrollViewInputLabel.heightAnchor),
+            inputLabel.widthAnchor.constraint(greaterThanOrEqualTo: scrollViewInputLabel.widthAnchor),
             
             // Кнопки
             vStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: UIConstants.leftSpacingVStackview),
@@ -140,37 +193,42 @@ class ViewController: UIViewController {
         let button = UIButton(type: .system)
         button.tintColor = .white
         button.titleLabel?.font = .boldSystemFont(ofSize: UIConstants.buttonFontSize)
-//        UIConstants.device == .phone ? .boldSystemFont(ofSize: 24) : .boldSystemFont(ofSize: 34)
         button.setTitle(title, for: .normal)
         button.backgroundColor = buttonColor
         button.layer.cornerRadius = UIConstants.buttonCornerRadius
-//        UIConstants.device == .phone ? (UIConstants.buttonSize)/2 : 50
         button.layer.masksToBounds = true
         button.addTarget(self, action: #selector(buttonTapped(_ :)), for: .touchUpInside)
+        
+        
+        let longPress = UILongPressGestureRecognizer(target: self, action: #selector(buttonLongPressed(_:)))
+            button.addGestureRecognizer(longPress)
+        
         return button
     }
     
     
     
-    //MARK: - @objc functions
-    @objc private func buttonTapped(_ sender: UIButton) {
-        guard let title = sender.currentTitle else { return }
-        let newText = model.inputSource(value: title)
-        updateInputLabel(text: newText)
-        
-    }
+    
+    private func updateResultLabel() {
+        resultLabel.sizeToFit()
+        scrollViewResultLabel.contentSize = CGSize(width: resultLabel.frame.width, height: scrollViewResultLabel.frame.height)
 
+        // Скроллим вправо к концу текста
+        let offsetX = max(scrollViewResultLabel.contentSize.width - scrollViewResultLabel.bounds.width, 0)
+        scrollViewResultLabel.setContentOffset(CGPoint(x: offsetX, y: 0), animated: false)
+    }
+   
     
     private func updateInputLabel(text: String) {
         inputLabel.text = text
         
         // Layout-ni yangilash
         inputLabel.sizeToFit()
-        scrollView.contentSize = CGSize(width: inputLabel.frame.width, height: scrollView.frame.height)
+        scrollViewInputLabel.contentSize = CGSize(width: inputLabel.frame.width, height: scrollViewInputLabel.frame.height)
 
         // Scroll-ni oxiriga surish
-        let offsetX = max(scrollView.contentSize.width - scrollView.bounds.width, 0)
-        scrollView.setContentOffset(CGPoint(x: offsetX, y: 0), animated: false)
+        let offsetX = max(scrollViewInputLabel.contentSize.width - scrollViewInputLabel.bounds.width, 0)
+        scrollViewInputLabel.setContentOffset(CGPoint(x: offsetX, y: 0), animated: false)
     }
     
      

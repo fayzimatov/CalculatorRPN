@@ -14,7 +14,7 @@ class UIConstants {
     static let windowHeight: CGFloat = UIScreen.main.bounds.height
     static let buttonSize = (windowWidth - 3 * intervalSpacingStackView - 2 * leftSpacingVStackview) / 4
     static let vStackViewBottom: CGFloat = -20
-    static let inputLabelBottom: CGFloat = -10
+    static let inputLabelBottom: CGFloat = -25
 
     
     static let buttonCornerRadius: CGFloat = (device == .phone) ? (buttonSize / 2) : 50
