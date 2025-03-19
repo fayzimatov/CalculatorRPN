@@ -67,6 +67,11 @@ class CalculatorModel {
             currentInput = simplifyBrackets(in: currentInput)
             currentInput = cleanExpression(from: currentInput)
             
+            let tokens = RPNFunctions.tokenizeExpression(currentInput)
+            let rpnExpression = RPNFunctions.parseToRPN(to: tokens)
+            
+            currentInput = rpnExpression.joined(separator: " ")
+            
         case "±":
             let operators = ["+", "-", "÷", "×"]
             let hasOperators = operators.contains { currentInput.contains($0) }
