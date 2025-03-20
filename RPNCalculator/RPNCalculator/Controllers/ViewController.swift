@@ -111,6 +111,7 @@ class ViewController: UIViewController {
             if title == "⌫" {
                 inputLabel.text = "0"
                 model.resetInput()
+                updateInputLabel(text: "0")
             } else {
                 let newText = model.inputSource(value: title)
                 updateInputLabel(text: newText)

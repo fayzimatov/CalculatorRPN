@@ -79,6 +79,7 @@ class CalculatorModel {
             resultInput = currentInput
             currentInput = RPNFunctions.calculateRPN(to: rpnExpression)
             
+            
         case "±":
             let operators = ["+", "-", "÷", "×"]
             let hasOperators = operators.contains { currentInput.contains($0) }
