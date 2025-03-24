@@ -10,7 +10,9 @@ class CalculatorModel {
     
     
     private(set) var currentInput: String = "0"
-
+    
+    var clearElement = false
+    
     func resetInput() {
         currentInput = "0"
     }
@@ -32,6 +34,13 @@ class CalculatorModel {
             
             
         case "+", "-", "÷", "×":
+            print(currentInput)
+            if let lastChar = currentInput.last, lastChar.isLetter {
+                print("lastChar: \(lastChar)")
+                break
+            } else {
+                clearElement = false
+            }
             if currentInput.isEmpty {
                 currentInput = "0"
             }
@@ -53,6 +62,12 @@ class CalculatorModel {
             
             
         case ",":
+            if let lastChar = currentInput.last, lastChar.isLetter {
+                currentInput.removeAll()
+                currentInput += "0,"
+                clearElement = false
+                break
+            }
             if currentInput == "0" {
                 currentInput = "0,"
             } else if let last = currentInput.last, last == "("{
@@ -70,17 +85,37 @@ class CalculatorModel {
             }
             
         case "=":
-            currentInput = balanceBrackets(in: currentInput)
-            currentInput = simplifyBrackets(in: currentInput)
-            currentInput = cleanExpression(from: currentInput)
+            if containsOperator(in: currentInput) && currentInput.last != "(" {
+                clearElement = true
+            }
             
-            let tokens = RPNFunctions.tokenizeExpression(currentInput)
+            func containsOperator(in text: String) -> Bool {
+                let operators: Set<Character> = ["+", "-", "÷", "×"]
+                return text.contains { operators.contains($0) }
+            }
+
+           
+            
+            var tokens: [String] = []
+            if let lastChar = currentInput.last, ["+", "-", "÷", "×"].contains(lastChar) {
+                currentInput.removeLast()
+                tokens = RPNFunctions.tokenizeExpression(String(currentInput))
+            } else {
+                tokens = RPNFunctions.tokenizeExpression(currentInput)
+            }
+            
             let rpnExpression = RPNFunctions.parseToRPN(to: tokens)
             resultInput = currentInput
-            currentInput = RPNFunctions.calculateRPN(to: rpnExpression)
-            
-            
+            if ["+", "-", "÷", "×"].contains(currentInput.last) {
+                currentInput = RPNFunctions.calculateRPN(to: rpnExpression)
+            } else if !(currentInput.last == "(") {
+                currentInput = RPNFunctions.calculateRPN(to: rpnExpression)
+            }
+                 
         case "±":
+            if let lastChar = currentInput.last, lastChar.isLetter {
+                break
+            }
             let operators = ["+", "-", "÷", "×"]
             let hasOperators = operators.contains { currentInput.contains($0) }
             
@@ -95,6 +130,13 @@ class CalculatorModel {
             }
             
         case "(":
+            if let lastChar = currentInput.last, lastChar.isLetter {
+                currentInput.removeAll()
+                currentInput += value
+                clearElement = false
+                break
+            }
+            clearElement = false
             if  currentInput == "0" {
                 currentInput = "("
             }  else if let last = currentInput.last, last == "(" || ["+", "-", "÷", "×"].contains(last) {
@@ -131,55 +173,26 @@ class CalculatorModel {
             }
             
             
+            
         default:
-//            let result = currentInput.split { ["+", "-", "÷", "×"].contains($0) }
-//            
-//            
-//            
-//            if currentInput == "0" {
-//                currentInput = value
-//            } else if splitExpression(currentInput).last == "0" {
-//                currentInput.removeLast()
-//                currentInput +=  value
-//            }
-//            else if let last = currentInput.last, last == ")" {
-//                currentInput += "×" + value
-//            }
-//            else if value == "0", let lastChar = currentInput.last, "+×÷".contains(lastChar) {
-//                // "+", "×", "÷" dan keyin "0" qo'shishga ruxsat beramiz
-//                currentInput += value
-//            }
-//            else if value == "0", let lastChar = currentInput.last, lastChar == "-",
-//                    let secondLast = currentInput.dropLast().last, !"0123456789".contains(secondLast) {
-//                // "-0" bo'lishi mumkin, lekin "00", "-00" yoki undan ko‘pi bo‘lishi mumkin emas
-//                break
-//            }
-//            else if value == "0", result.last?.contains(",") == true {
-//                currentInput += value
-//            }
-//            else if let lastChar = currentInput.dropLast().last, let last = currentInput.last,
-//                    value == "0", !result[result.count - 1].contains(","),
-//                    "+-×÷".contains(lastChar), last == "0" {
-//                break
-//            } else if  currentInput.suffix(2) == "(0" {
-//                currentInput.removeLast()
-//                currentInput += value
-//            }
-//            else {
-//                currentInput += value
-//            }
-//        }
-//            
-//
+            print("clear\(clearElement)")
+            print("current\(currentInput)")
             
-            
-        
+            if clearElement && ["1","2","3","4","5","6","7","8","9","0"].contains(value) {
+                currentInput.removeAll()
+                clearElement = false
+//                currentInput += value
+            }
             let result = currentInput.split { ["+", "-", "÷", "×"].contains($0) }
-
+            print(currentInput)
+            //1
             if currentInput == "0" {
                 currentInput = value
-            }
-            else if let last = splitExpression(currentInput).last, last == "0" {
+            }//2 ne daet nam pisat dve nuli ili posle nulya chto to podobnoe
+            else if let last = splitExpression(currentInput).last, last == "0" , !["+", "-", "÷", "×"].contains(currentInput.last) {
+                print(splitExpression(currentInput))
+                print(last)
+                print(currentInput)
                 currentInput.removeLast()
                 currentInput += value
             }
@@ -257,17 +270,19 @@ class CalculatorModel {
         return result
     }
 
+    
+    
+    
     private func toggleSign(in text: String) -> String {
         var value = text
         let result = splitExpression(value)
-        print(result)
-        let openCount = currentInput.filter { $0 == "(" }.count
-        let closeCount = currentInput.filter { $0 == ")" }.count
+        print("toggle: \(result)")
+        
         
         guard let last = result.last else { return value }
         guard let lastCurrent = currentInput.last,!["+", "-", "÷", "×", "(", ")"].contains(last) else { return value}
 
-        if ["+", "-", "÷", "×", "("].contains(lastCurrent) || openCount > closeCount {
+        if ["+", "-", "÷", "×",].contains(lastCurrent) {
             return value
         } else {
             if value.count > last.count, value.dropLast(last.count + 1).last == "-" {
@@ -281,12 +296,16 @@ class CalculatorModel {
                 let newLast = String(last.dropFirst(2).dropLast()) // (-X) -> X
                 value.removeLast(last.count)
                 value.append(newLast)
-            }
+            }//------
             else if last.first == "(" {
+                
                 toggle = false
-                let newLast = "(-" + last.dropFirst() // (X) -> (-X)
+                let newLast = "(-" + last + ")" // (X) -> (-X)
                 value.removeLast(last.count)
                 value.append(newLast)
+                print(value)
+                
+                
             }
             else if last.first == "-" {
                 toggle = true
@@ -304,26 +323,8 @@ class CalculatorModel {
         }
         return value
     }
+
     
-    
-    func simplifyBrackets(in expression: String) -> String {
-        var result = expression
-        
-        while result.first == "(" && result.last == ")" {
-            let trimmed = String(result.dropFirst().dropLast())
-            
-            let openCount = trimmed.filter { $0 == "(" }.count
-            let closeCount = trimmed.filter { $0 == ")" }.count
-            
-            if openCount == closeCount {
-                result = trimmed
-            } else {
-                break
-            }
-        }
-        
-        return result
-    }
     
     func balanceBrackets(in expressesion: String) -> String {
         let openCount = currentInput.filter { $0 == "(" }.count

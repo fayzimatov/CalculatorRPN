@@ -100,121 +100,6 @@ class RPNFunctions {
     }
     
     
-//    static func parseToRPN(to tokens: [String]) -> [String] {
-//        var output: [String] = []
-//        var operators = Stack<String>()
-//        let precedence: [String: Int] = ["+": 1, "-": 1, "*": 2, "/": 2, "÷": 2, "×": 2]
-//        
-//        var expectUnary = true  // Ожидаем унарный оператор в начале или после оператора/скобки
-//        
-//        var index = 0
-//        while index < tokens.count {
-//            let token = tokens[index]
-//            
-//            // Проверка, является ли токен числом (включая отрицательные)
-//            if let num = Double(token) {
-//                output.append(token)  // Добавляем число как есть, включая отрицательные
-//                expectUnary = false
-//            }
-//            // Открывающая скобка
-//            else if token == "(" {
-//                operators.push(token)
-//                expectUnary = true  // После "(" может быть унарный минус
-//            }
-//            // Закрывающая скобка
-//            else if token == ")" {
-//                while let last = operators.peek(), last != "(" {
-//                    output.append(operators.pop()!)
-//                }
-//                _ = operators.pop()  // Удаляем "("
-//                expectUnary = false
-//            }
-//            // Унарный минус
-//            else if token == "-" && expectUnary {
-//                // Если следующий токен — число, добавляем его как отрицательное
-//                if index + 1 < tokens.count, let nextNum = Double(tokens[index + 1]) {
-//                    output.append("-\(nextNum)")  // Добавляем отрицательное число
-//                    index += 1  // Пропускаем следующий токен
-//                } else {
-//                    // Если это не число, то это ошибка или другой случай (не рассматриваем здесь)
-//                    operators.push(token)  // Обрабатываем как бинарный оператор
-//                }
-//                expectUnary = false
-//            }
-//            // Бинарный оператор
-//            else if precedence.keys.contains(token) {
-//                while let last = operators.peek(), let lastPrecedence = precedence[last],
-//                      let tokenPrecedence = precedence[token], lastPrecedence >= tokenPrecedence {
-//                    output.append(operators.pop()!)
-//                }
-//                operators.push(token)
-//                expectUnary = true  // После оператора может быть унарный минус
-//            }
-//            
-//            index += 1
-//        }
-//        
-//        // Выгружаем оставшиеся операторы из стека
-//        while let op = operators.pop() {
-//            if op != "(" {  // Пропускаем скобки, если остались (ошибка входных данных)
-//                output.append(op)
-//            }
-//        }
-//        
-//        print("parseToRPN: \(output)")
-//        return output
-//    }
-    
-//
-//    static func parseToRPN(to tokens: [String]) -> [String] {
-//        var output: [String] = []
-//        var operators = Stack<String>()
-//        let precedence: [String: Int] = ["+" : 1, "-" : 1, "*" : 2, "/" : 2, "÷" : 2, "×" : 2]
-//        
-//        var expectUnary = true  // Ожидаем унарный минус в начале
-//        
-//        var index = 0
-//        while index < tokens.count {
-//            let token = tokens[index]
-//            
-//            if let _ = Double(token) {  // Если число
-//                output.append(token)
-//                expectUnary = false
-//            } else if token == "(" {  // Если открывающая скобка
-//                operators.push(token)
-//                expectUnary = true  // После ( может быть унарный минус
-//            } else if token == ")" {  // Если закрывающая скобка
-//                while let last = operators.peek(), last != "(" {
-//                    output.append(operators.pop()!)
-//                }
-//                _ = operators.pop()  // Удаляем "("
-//                expectUnary = false
-//            } else if token == "-" && expectUnary {  // Унарный минус
-//                if index + 1 < tokens.count, let nextNum = Double(tokens[index + 1]) {
-//                    output.append("-\(nextNum)")  // Склеиваем с числом
-//                    index += 1  // Пропускаем число, т.к. уже добавили
-//                }
-//            } else if precedence.keys.contains(token) {  // Бинарный оператор
-//                while let last = operators.peek(), let lastPrecedence = precedence[last],
-//                      let tokenPrecedence = precedence[token], lastPrecedence >= tokenPrecedence {
-//                    output.append(operators.pop()!)
-//                }
-//                operators.push(token)
-//                expectUnary = true  // Следующий минус после оператора может быть унарным
-//            }
-//            
-//            index += 1
-//        }
-//
-//        while let op = operators.pop() {
-//            output.append(op)
-//        }
-//
-//        print("parseToRPN: \(output)")
-//        return output
-//    }
-//    
-    
     
     enum Operators: String {
         
@@ -248,10 +133,15 @@ class RPNFunctions {
             if let number = Double(tokens) {
                 resultStack.push(number)
             } else if let op = Operators(rawValue: tokens),
-                      let num1 = resultStack.pop(), //22*(-3) // num1 = 19
-                      let num2 = resultStack.pop() {// num2 = nil
-                let result = op.apply(num1, num2).rounded(toPlaces: 8)
-                resultStack.push(result) // doesn't happen in the second iteration
+                      let num1 = resultStack.pop(),
+                      let num2 = resultStack.pop() {
+                if num1 == 0 && num2 == 0 {
+                   return "Бесконечность"
+                } else {
+                    let result = op.apply(num1, num2).rounded(toPlaces: 8)
+                    resultStack.push(result)
+                    
+                }
                 
             }
         }
@@ -259,18 +149,17 @@ class RPNFunctions {
         if let finalResult = resultStack.pop() {
             return formatResult(finalResult)
         }
-        return "Error"
+        return "Неопределено"
     }
     
     
-//
     
     static func formatResult(_ number: Double) -> String {
         let roundedNumber = Double(String(format: "%.10f", number)) ?? number
 
         // Проверяем, помещается ли в Int
         if roundedNumber.isInfinite || roundedNumber.isNaN {
-            return "Ошибка: некорректное число"
+            return "Неопределено"
         }
 
         if roundedNumber > Double(Int.max) || roundedNumber < Double(Int.min) {

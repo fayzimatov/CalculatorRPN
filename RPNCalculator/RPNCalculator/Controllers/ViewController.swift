@@ -19,7 +19,6 @@ class ViewController: UIViewController {
     ]
 
     
-    //MARK: - Zametka
     var model = CalculatorModel()
     
     
@@ -54,7 +53,7 @@ class ViewController: UIViewController {
         let label = UILabel()
         label.text = "0"
         label.textAlignment = .right
-        label.font = .boldSystemFont(ofSize: 60)
+        label.font = .boldSystemFont(ofSize: 50)
         label.textColor = .customLabel
         return label
     }()
