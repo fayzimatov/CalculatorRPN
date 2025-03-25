@@ -8,18 +8,22 @@
 import Foundation
 class CalculatorModel {
     
-    
+    // need to add MARKs
+
     private(set) var currentInput: String = "0"
     
     var clearElement = false
-    
+
+    // need to order it: properties first, then funcs
     func resetInput() {
         currentInput = "0"
     }
     
         var resultInput: String?
     private var toggle = true
-    
+
+    // 1) would be better to add some documentation for this func to make it more clear what's inside. This func is huge and it's difficult to understand what happens inside, some documentation could help
+    // 2) think if it's possible to make this func shorter; maybe make smaller funcs from some fragments of this code and call it inside this func
     func inputSource(value: String) -> String {
         
         switch value {
@@ -340,8 +344,8 @@ class CalculatorModel {
     }
     
     
-    
-    
+    // this is a big space between funcs, you don't need it
+
     
     func cleanExpression(from expression: String) -> String {
         var result = ""

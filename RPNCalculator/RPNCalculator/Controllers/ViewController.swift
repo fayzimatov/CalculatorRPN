@@ -7,6 +7,7 @@
 
 import UIKit
 
+// need to give a meaningful name
 class ViewController: UIViewController {
 
 // MARK: - UI Elements
@@ -18,10 +19,10 @@ class ViewController: UIViewController {
         ["±", "0", ",", "="]
     ]
 
-    
+    // this is not a UI Element, but a property. Try to add a new MARK 'Properties' and place it before 'UI Elements' (common style)
     var model = CalculatorModel()
     
-    
+    // a property as well + normally enums are placed not in a class, but above
     enum ButtonType {
             case number, operatorSymbol, function
         }
@@ -84,7 +85,15 @@ class ViewController: UIViewController {
         return vStackView
     }()
 
-    
+    /* this func must be placed before all custom funcs
+     Common order of parts:
+     1. properties
+     2. ui elements
+     3. override funcs
+     4. custom funcs (eg. open funcs first, then second funcs)
+     5. selector funcs
+     6. extensions
+     */
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
