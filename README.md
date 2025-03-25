@@ -23,21 +23,24 @@
 ## 🔹 Функциональность  
 - **Кнопка удаления**  
   - Одно нажатие — удаляет один символ.  
-  <img src="Images/remove_button.png" width="300">  
+  <img src="Images/remove_button.png" width="300">
+
   - Долгое нажатие — очищает всю строку.  
 
 - **Кнопка отрицательного числа (±)**  
   - Первое нажатие делает число отрицательным.  
-  <img src="Images/negate_button.png" width="300">  
+  <img src="Images/negate_button.png" width="300">
+
   - Второе нажатие меняет обратно на положительное.
 
 - **Поддерживаемые операции:** `+`, `-`, `×`, `÷`, `()`.
 
 - **Обработка ошибок:**  
   - Деление на `0` отображает `Неопределено`.  
-  <img src="Images/undefined.png" width="300">  
+  <img src="Images/undefined.png" width="300">
+
   - `0 ÷ 0` → `Бесконечность`.  
-  <img src="Images/infinity.png" width="300">  
+  <img src="Images/infinitiv" width="300">  
 
 ## 🚀 Установка  
 1. Клонируйте репозиторий:  
