@@ -35,14 +35,17 @@
 
 - **Обработка ошибок:**
   - Деление на `0` отображает `Неопределено`.
+    <img src="Images/undefined" width="300">
   - `0 ÷ 0` → `Бесконечность`.
+   <img src="Images/infinitiv.png" width="300">
+
 
     ## 🚀 Установка  
 1. Клонируйте репозиторий:  
    ```sh
    git clone https://github.com/username/CalculatorRPN.git
 
-   ## 🛠 Технологии
+## 🛠 Технологии
 
 - **Swift**
 - **MVVM**
