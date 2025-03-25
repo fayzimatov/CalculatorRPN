@@ -98,7 +98,16 @@ class ViewController: UIViewController {
         guard let title = sender.currentTitle else { return }
         let newText = model.inputSource(value: title)
         updateInputLabel(text: newText)
-        resultLabel.text = model.resultInput
+        if title != "=" {
+            resultLabel.text?.removeAll()
+        } else {
+            if var result = model.resultInput {
+                result = model.balanceBrackets(in: result)
+                resultLabel.text = result
+            } else {
+                resultLabel.text = ""
+            }
+        }
         updateResultLabel()
     }
 
@@ -106,7 +115,6 @@ class ViewController: UIViewController {
     @objc private func buttonLongPressed(_ sender: UILongPressGestureRecognizer) {
         if sender.state == .began {
             guard let button = sender.view as? UIButton, let title = button.currentTitle else { return }
-            print("Долгое нажатие на кнопку: \(title)")
             if title == "⌫" {
                 inputLabel.text = "0"
                 model.resetInput()
