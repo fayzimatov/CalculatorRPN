@@ -23,162 +23,29 @@ final class CalculatorModel: CalculatorModelProtocol {
 
     func processInput(_ value: String) -> String {
         switch value {
-        case "⌫":
-            if !state.currentInput.isEmpty {
-                state.currentInput.removeLast()
-                if state.currentInput.isEmpty {
-                    state.currentInput = "0"
-                }
-            }
-
-        case "+", "-", "÷", "×":
-            if let lastChar = state.currentInput.last, lastChar.isLetter {
-                break
-            } else {
-                state.clearElement = false
-            }
-            if state.currentInput.isEmpty {
-                state.currentInput = "0"
-            }
-            if let last = state.currentInput.last, ["+", "-", "÷", "×", ","].contains(String(last)) {
-                if last == "-" && state.currentInput.suffix(2) == "(-" && value != "-" {
-                    state.currentInput.removeLast()
-                } else {
-                    state.currentInput.removeLast()
-                    state.currentInput += value
-                }
-            } else if let last = state.currentInput.last, last == "(", value == "-" {
-                state.currentInput += value
-            } else if let last = state.currentInput.last, last != "(" {
-                state.currentInput += value
-            }
-
-        case ",":
-            if let lastChar = state.currentInput.last, lastChar.isLetter {
-                state.currentInput.removeAll()
-                state.currentInput += "0,"
-                state.clearElement = false
-                break
-            }
-            if state.currentInput == "0" {
-                state.currentInput = "0,"
-            } else if let last = state.currentInput.last, last == "(" {
-                state.currentInput += "0,"
-            } else if let last = state.currentInput.last, last == ")" {
-                state.currentInput += "×0,"
-            } else {
-                let components = state.currentInput.components(separatedBy: ["+", "-", "÷", "×"])
-                if let lastNumber = components.last, !lastNumber.contains(",") {
-                    if let last = state.currentInput.last, ["+", "-", "÷", "×"].contains(String(last)) {
-                        state.currentInput += "0"
-                    }
-                    state.currentInput += ","
-                }
-            }
-
-        case "=":
-            if containsOperator(in: state.currentInput) && state.currentInput.last != "(" {
-                state.clearElement = true
-            }
-
-            var tokens: [String] = []
-            if let lastChar = state.currentInput.last, ["+", "-", "÷", "×"].contains(lastChar) {
-                state.currentInput.removeLast()
-                tokens = rpnService.tokenizeExpression(state.currentInput)
-            } else {
-                tokens = rpnService.tokenizeExpression(state.currentInput)
-            }
-
-            let rpnExpression = rpnService.convertToRPN(from: tokens)
-            state.result = balanceBrackets(in: state.currentInput)
-            if ["+", "-", "÷", "×"].contains(state.currentInput.last) {
-                state.currentInput = rpnService.calculateRPN(rpnExpression)
-            } else if state.currentInput.last != "(" {
-                state.currentInput = rpnService.calculateRPN(rpnExpression)
-            }
-
-        case "±":
-            if let lastChar = state.currentInput.last, lastChar.isLetter {
-                break
-            }
-            state.currentInput = toggleSign(in: state.currentInput)
-
-        case "(":
-            if let lastChar = state.currentInput.last, lastChar.isLetter {
-                state.currentInput.removeAll()
-                state.currentInput += value
-                state.clearElement = false
-                break
-            }
-            state.clearElement = false
-            if state.currentInput == "0" {
-                state.currentInput = "("
-            } else if let last = state.currentInput.last, last == "(" || ["+", "-", "÷", "×"].contains(last) {
-                state.currentInput += "("
-            } else if let last = state.currentInput.last, last == "," {
-                state.currentInput.removeLast()
-                state.currentInput += "×("
-            } else {
-                state.currentInput += "×("
-            }
-
-        case ")":
-            let openCount = state.currentInput.filter { $0 == "(" }.count
-            let closeCount = state.currentInput.filter { $0 == ")" }.count
-            if let last = state.currentInput.last, last == "(" {
-                state.currentInput.removeLast()
-                state.currentInput += "("
-            } else if let last = state.currentInput.last, last == "," && openCount > closeCount {
-                state.currentInput.removeLast()
-                state.currentInput += ")"
-            } else if let last = state.currentInput.last, ["+", "-", "÷", "×"].contains(last) && openCount > closeCount {
-                if state.currentInput.suffix(2) == "(-" {
-                    state.currentInput.removeLast()
-                } else {
-                    state.currentInput.removeLast()
-                    state.currentInput += ")"
-                }
-            } else if openCount > closeCount {
-                state.currentInput += ")"
-            } else if let last = state.currentInput.last, last == "-" && openCount > closeCount {
-                state.currentInput.removeLast()
-            }
-
-        default:
-            if state.clearElement && ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"].contains(value) {
-                state.currentInput.removeAll()
-                state.clearElement = false
-            }
-            if state.currentInput == "0" {
-                state.currentInput = value
-            } else if let last = splitExpression(state.currentInput).last, last == "0", !["+", "-", "÷", "×"].contains(state.currentInput.last) {
-                state.currentInput.removeLast()
-                state.currentInput += value
-            } else if let last = state.currentInput.last, last == ")" {
-                state.currentInput += "×" + value
-            } else if value == "0", let lastChar = state.currentInput.last, "+×÷".contains(lastChar) {
-                state.currentInput += value
-            } else if value == "0", state.currentInput.count > 1,
-                      let lastChar = state.currentInput.last, lastChar == "-",
-                      let secondLast = state.currentInput.dropLast().last, !"0123456789)".contains(secondLast) {
-                break
-            } else if value == "0", let lastElement = splitExpression(state.currentInput).last, lastElement.contains(",") {
-                state.currentInput += value
-            } else if let lastChar = state.currentInput.dropLast().last, let last = state.currentInput.last,
-                      value == "0", !splitExpression(state.currentInput).isEmpty, splitExpression(state.currentInput).last?.contains(",") == false,
-                      "+-×÷".contains(lastChar), last == "0" {
-                break
-            } else if state.currentInput.suffix(2) == "(0" {
-                state.currentInput.removeLast()
-                state.currentInput += value
-            } else {
-                state.currentInput += value
-            }
+        case "⌫": checkerDelete()
+        case "+", "-", "÷", "×": checkerOperations(in: value)
+        case ",": checkerComma()
+        case "=": checkerEqual()
+        case "±": checkerNegativeLastNum()
+        case "(": checkerOpenBracket(in: value)
+        case ")": checkerCloceBracket()
+        default: checkerNumbers(in: value)
         }
         return state.currentInput
     }
 
-    
+    func balanceBrackets(in expression: String) -> String {
+    let openCount = state.currentInput.filter { $0 == "(" }.count
+    let closeCount = state.currentInput.filter { $0 == ")" }.count
+
+    if expression.last != "(" && !["+", "-", "÷", "×"].contains(expression.last ?? " ") {
+        let missingCloseBrackets = max(0, openCount - closeCount)
+        return expression + String(repeating: ")", count: missingCloseBrackets)
+    }
+
+    return expression
+}
     
     private func containsOperator(in text: String) -> Bool {
         let operators: Set<Character> = ["+", "-", "÷", "×"]
@@ -227,7 +94,7 @@ final class CalculatorModel: CalculatorModelProtocol {
     }
 
     
-    private func toggleSign(in text: String) -> String {
+    private func negativeLastNumber(in text: String) -> String {
         var value = text
         let result = splitExpression(value)
         guard let last = result.last, let lastCurrent = value.last, !["+", "-", "÷", "×", "(", ")"].contains(lastCurrent) else { return value }
@@ -258,18 +125,176 @@ final class CalculatorModel: CalculatorModelProtocol {
 
         return value
     }
-
     
-    func balanceBrackets(in expression: String) -> String {
-    let openCount = state.currentInput.filter { $0 == "(" }.count
-    let closeCount = state.currentInput.filter { $0 == ")" }.count
-
-    if expression.last != "(" && !["+", "-", "÷", "×"].contains(expression.last ?? " ") {
-        let missingCloseBrackets = max(0, openCount - closeCount)
-        return expression + String(repeating: ")", count: missingCloseBrackets)
+    
+    private func checkerDelete() {
+        if !state.currentInput.isEmpty {
+            state.currentInput.removeLast()
+            if state.currentInput.isEmpty {
+                state.currentInput = "0"
+            }
+        }
     }
+    
+    
+    private func checkerOperations(in value: String) {
+        if let lastChar = state.currentInput.last, lastChar.isLetter {
+            return
+        } else {
+            state.clearElement = false
+        }
+        if state.currentInput.isEmpty {
+            state.currentInput = "0"
+        }
+        if let last = state.currentInput.last, ["+", "-", "÷", "×", ","].contains(String(last)) {
+            if last == "-" && state.currentInput.suffix(2) == "(-" && value != "-" {
+                state.currentInput.removeLast()
+            } else {
+                state.currentInput.removeLast()
+                state.currentInput += value
+            }
+        } else if let last = state.currentInput.last, last == "(", value == "-" {
+            state.currentInput += value
+        } else if let last = state.currentInput.last, last != "(" {
+            state.currentInput += value
+        }
+    }
+    
+    
+    private func checkerComma() {
+        if let lastChar = state.currentInput.last, lastChar.isLetter {
+            state.currentInput.removeAll()
+            state.currentInput += "0,"
+            state.clearElement = false
+            return
+        }
+        if state.currentInput == "0" {
+            state.currentInput = "0,"
+        } else if let last = state.currentInput.last, last == "(" {
+            state.currentInput += "0,"
+        } else if let last = state.currentInput.last, last == ")" {
+            state.currentInput += "×0,"
+        } else {
+            let components = state.currentInput.components(separatedBy: ["+", "-", "÷", "×"])
+            if let lastNumber = components.last, !lastNumber.contains(",") {
+                if let last = state.currentInput.last, ["+", "-", "÷", "×"].contains(String(last)) {
+                    state.currentInput += "0"
+                }
+                state.currentInput += ","
+            }
+        }
 
-    return expression
-}
+    }
+    
+    
+    private func checkerEqual() {
+        if containsOperator(in: state.currentInput) && state.currentInput.last != "(" {
+            state.clearElement = true
+        }
+
+        var tokens: [String] = []
+        if let lastChar = state.currentInput.last, ["+", "-", "÷", "×"].contains(lastChar) {
+            state.currentInput.removeLast()
+            tokens = rpnService.tokenizeExpression(state.currentInput)
+        } else {
+            tokens = rpnService.tokenizeExpression(state.currentInput)
+        }
+
+        let rpnExpression = rpnService.convertToRPN(from: tokens)
+        state.result = balanceBrackets(in: state.currentInput)
+        if ["+", "-", "÷", "×"].contains(state.currentInput.last) {
+            state.currentInput = rpnService.calculateRPN(rpnExpression)
+        } else if state.currentInput.last != "(" {
+            state.currentInput = rpnService.calculateRPN(rpnExpression)
+        }
+
+    }
+    
+    
+    private func checkerNegativeLastNum() {
+        if let lastChar = state.currentInput.last, lastChar.isLetter {
+            return
+        }
+        state.currentInput = negativeLastNumber(in: state.currentInput)
+    }
+    
+    
+    private func checkerOpenBracket(in value: String) {
+        if let lastChar = state.currentInput.last, lastChar.isLetter {
+            state.currentInput.removeAll()
+            state.currentInput += value
+            state.clearElement = false
+            return
+        }
+        state.clearElement = false
+        if state.currentInput == "0" {
+            state.currentInput = "("
+        } else if let last = state.currentInput.last, last == "(" || ["+", "-", "÷", "×"].contains(last) {
+            state.currentInput += "("
+        } else if let last = state.currentInput.last, last == "," {
+            state.currentInput.removeLast()
+            state.currentInput += "×("
+        } else {
+            state.currentInput += "×("
+        }
+    }
+    
+    
+    private func checkerCloceBracket() {
+        let openCount = state.currentInput.filter { $0 == "(" }.count
+        let closeCount = state.currentInput.filter { $0 == ")" }.count
+        if let last = state.currentInput.last, last == "(" {
+            state.currentInput.removeLast()
+            state.currentInput += "("
+        } else if let last = state.currentInput.last, last == "," && openCount > closeCount {
+            state.currentInput.removeLast()
+            state.currentInput += ")"
+        } else if let last = state.currentInput.last, ["+", "-", "÷", "×"].contains(last) && openCount > closeCount {
+            if state.currentInput.suffix(2) == "(-" {
+                state.currentInput.removeLast()
+            } else {
+                state.currentInput.removeLast()
+                state.currentInput += ")"
+            }
+        } else if openCount > closeCount {
+            state.currentInput += ")"
+        } else if let last = state.currentInput.last, last == "-" && openCount > closeCount {
+            state.currentInput.removeLast()
+        }
+    }
+    
+    
+    private func checkerNumbers(in value: String) {
+        if state.clearElement && ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"].contains(value) {
+            state.currentInput.removeAll()
+            state.clearElement = false
+        }
+        if state.currentInput == "0" {
+            state.currentInput = value
+        } else if let last = splitExpression(state.currentInput).last, last == "0", !["+", "-", "÷", "×"].contains(state.currentInput.last) {
+            state.currentInput.removeLast()
+            state.currentInput += value
+        } else if let last = state.currentInput.last, last == ")" {
+            state.currentInput += "×" + value
+        } else if value == "0", let lastChar = state.currentInput.last, "+×÷".contains(lastChar) {
+            state.currentInput += value
+        } else if value == "0", state.currentInput.count > 1,
+                  let lastChar = state.currentInput.last, lastChar == "-",
+                  let secondLast = state.currentInput.dropLast().last, !"0123456789)".contains(secondLast) {
+            return
+        } else if value == "0", let lastElement = splitExpression(state.currentInput).last, lastElement.contains(",") {
+            state.currentInput += value
+        } else if let lastChar = state.currentInput.dropLast().last, let last = state.currentInput.last,
+                  value == "0", !splitExpression(state.currentInput).isEmpty, splitExpression(state.currentInput).last?.contains(",") == false,
+                  "+-×÷".contains(lastChar), last == "0" {
+            return
+        } else if state.currentInput.suffix(2) == "(0" {
+            state.currentInput.removeLast()
+            state.currentInput += value
+        } else {
+            state.currentInput += value
+        }
+    }
     
 }
+
