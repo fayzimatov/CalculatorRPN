@@ -1,25 +1,26 @@
 //
-//  Functions.swift
+//  RPNCalculatorService.swift
 //  RPNCalculator
 //
-//  Created by Umidjon on 18/03/25.
+//  Created by Umidjon Fayzimatov on 20/03/25.
 //
 
-import Foundation
+final class RPNCalculatorService: RPNCalculatorServiceProtocol {
+    private let helper: CalculationHelperProtocol
 
+    init(helper: CalculationHelperProtocol) {
+        self.helper = helper
+    }
 
-class RPNFunctions {
-    
-    
-    static func tokenizeExpression(_ expression: String) -> [String] {
+    func tokenizeExpression(_ expression: String) -> [String] {
         var tokens: [String] = []
         var currentToken = ""
-        let express = replaceCommasWithDots(in: expression)
-        
+        let express = helper.replaceCommasWithDots(in: expression)
+
         for char in express {
             if char.isNumber || char == "," || char == "." {
                 currentToken.append(char)
-            } else if ["+", "-", "*", "÷", "(", ")","/", "×"].contains(char) {
+            } else if ["+", "-", "*", "÷", "(", ")", "/", "×"].contains(char) {
                 if !currentToken.isEmpty {
                     tokens.append(currentToken)
                     currentToken = ""
@@ -29,35 +30,26 @@ class RPNFunctions {
                 continue
             }
         }
-        
+
         if !currentToken.isEmpty {
             tokens.append(currentToken)
         }
-        
+
         return tokens
     }
-    
-    
-    static func replaceCommasWithDots(in text: String) -> String {
-        return text.replacingOccurrences(of: ",", with: ".")
-    }
-    
-    static func replaceDotsWithCommas(in text: String) -> String {
-        return text.replacingOccurrences(of: ".", with: ",")
-    }
-    
-    static func parseToRPN(to tokens: [String]) -> [String] {
+
+    func convertToRPN(from tokens: [String]) -> [String] {
         var output: [String] = []
         var operators = Stack<String>()
         let precedence: [String: Int] = ["+": 1, "-": 1, "*": 2, "/": 2, "÷": 2, "×": 2]
-        
+
         var expectUnary = true
         var index = 0
-        
+
         while index < tokens.count {
             let token = tokens[index]
-            
-            if let num = Double(token) {
+
+            if let _ = Double(token) {
                 output.append(token)
                 expectUnary = false
             } else if token == "(" {
@@ -86,102 +78,40 @@ class RPNFunctions {
                 operators.push(token)
                 expectUnary = true
             }
-            
+
             index += 1
         }
-        
+
         while let op = operators.pop() {
             if op != "(" {
                 output.append(op)
             }
         }
-        
+
         return output
     }
-    
-    
-    
-    enum Operators: String {
-        
-        case multiply = "×", multiply2 = "*"
-        case divide = "/", divide2 = "÷"
-        case minus = "-"
-        case plus = "+"
-        
-        func apply(_ num1: Double, _ num2: Double) -> Double {
-            switch self {
-            case .multiply, .multiply2:
-                return num1 * num2
-            case .divide, .divide2:
-                return num2 / num1
-            case .minus:
-                return num2 - num1
-            case .plus:
-                return num1 + num2
-            }
-        }
-        
-    }
-    
-    
-    
-    static func calculateRPN(to postfix: [String]) -> String {
-        
+
+    func calculateRPN(_ expression: [String]) -> String {
         var resultStack = Stack<Double>()
-        
-        for tokens in postfix {
-            if let number = Double(tokens) {
+
+        for token in expression {
+            if let number = Double(token) {
                 resultStack.push(number)
-            } else if let op = Operators(rawValue: tokens),
+            } else if let op = Operators(rawValue: token),
                       let num1 = resultStack.pop(),
                       let num2 = resultStack.pop() {
                 if num1 == 0 && num2 == 0, op.rawValue == "÷" {
-                   return "Бесконечность"
+                    return "Бесконечность"
                 } else {
                     let result = op.apply(num1, num2).rounded(toPlaces: 8)
                     resultStack.push(result)
-                    
                 }
-                
             }
         }
-         
+
         if let finalResult = resultStack.pop() {
-            return formatResult(finalResult)
+            return helper.formatResult(finalResult)
         }
         return "Неопределено"
-    }
-    
-    
-    
-    static func formatResult(_ number: Double) -> String {
-        let roundedNumber = Double(String(format: "%.10f", number)) ?? number
-
-        // Проверяем, помещается ли в Int
-        if roundedNumber.isInfinite || roundedNumber.isNaN {
-            return "Неопределено"
-        }
-
-        if roundedNumber > Double(Int.max) || roundedNumber < Double(Int.min) {
-            return String(roundedNumber)
-        }
-
-        if roundedNumber.truncatingRemainder(dividingBy: 1) == 0 {
-            
-            return replaceDotsWithCommas(in: String(Int(roundedNumber)))
-        } else {
-            return replaceDotsWithCommas(in: String(roundedNumber))
-        }
-    }
-   
-    
-}
-
-
-
-extension Double {
-    func rounded(toPlaces places: Int) -> Double {
-        let factor = pow(10.0, Double(places))
-        return (self * factor).rounded() / factor
     }
 }
