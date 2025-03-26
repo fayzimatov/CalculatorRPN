@@ -109,7 +109,7 @@ class CalculatorModel {
             }
             
             let rpnExpression = RPNFunctions.parseToRPN(to: tokens)
-            resultInput = currentInput
+            resultInput = balanceBrackets(in: currentInput)
             if ["+", "-", "÷", "×"].contains(currentInput.last) {
                 currentInput = RPNFunctions.calculateRPN(to: rpnExpression)
             } else if !(currentInput.last == "(") {
@@ -179,8 +179,6 @@ class CalculatorModel {
             
             
         default:
-            print("clear\(clearElement)")
-            print("current\(currentInput)")
             
             if clearElement && ["1","2","3","4","5","6","7","8","9","0"].contains(value) {
                 currentInput.removeAll()
@@ -209,7 +207,7 @@ class CalculatorModel {
             }
             else if value == "0", currentInput.count > 1,
                     let lastChar = currentInput.last, lastChar == "-",
-                    let secondLast = currentInput.dropLast().last, !"0123456789".contains(secondLast) {
+                    let secondLast = currentInput.dropLast().last, !"0123456789)".contains(secondLast) {
                 // Разрешаем "-0", но запрещаем "-00"
                 break
             }
@@ -300,7 +298,7 @@ class CalculatorModel {
                 let newLast = String(last.dropFirst(2).dropLast()) // (-X) -> X
                 value.removeLast(last.count)
                 value.append(newLast)
-            }//------
+            }
             else if last.first == "(" {
                 
                 toggle = false
@@ -344,26 +342,8 @@ class CalculatorModel {
     }
     
     
-    // this is a big space between funcs, you don't need it
 
     
-    func cleanExpression(from expression: String) -> String {
-        var result = ""
-        var previousChar: Character?
-        
-        for (index, char) in expression.enumerated() {
-            if char == "," {
-                if index == expression.count - 1 || !expression[expression.index(expression.startIndex, offsetBy: index + 1)].isNumber {
-                    continue
-                }
-            }
-            result.append(char)
-            previousChar = char
-        }
-        
-        return result
-    }
-
     
     
 }

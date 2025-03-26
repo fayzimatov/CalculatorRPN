@@ -135,7 +135,7 @@ class RPNFunctions {
             } else if let op = Operators(rawValue: tokens),
                       let num1 = resultStack.pop(),
                       let num2 = resultStack.pop() {
-                if num1 == 0 && num2 == 0 {
+                if num1 == 0 && num2 == 0, op.rawValue == "÷" {
                    return "Бесконечность"
                 } else {
                     let result = op.apply(num1, num2).rounded(toPlaces: 8)
