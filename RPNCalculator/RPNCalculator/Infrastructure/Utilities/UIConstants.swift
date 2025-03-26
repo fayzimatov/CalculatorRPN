@@ -2,12 +2,12 @@
 //  UIConstants.swift
 //  RPNCalculator
 //
-//  Created by Umidjon Fayzimatov on 19/03/25.
+//  Created by Umidjon on 11/03/25.
 //
 
 import UIKit
 
-enum UIConstants {
+final class UIConstants {
     static let device = UIDevice.current.userInterfaceIdiom
     static let windowWidth: CGFloat = UIScreen.main.bounds.width
     static let windowHeight: CGFloat = UIScreen.main.bounds.height

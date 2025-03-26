@@ -1,24 +1,20 @@
 //
-//  RPNCalculatorService.swift
+//  RPNFunctions.swift
 //  RPNCalculator
 //
-//  Created by Umidjon Fayzimatov on 20/03/25.
+//  Created by Umidjon on 18/03/25.
 //
 
-final class RPNCalculatorService: RPNCalculatorServiceProtocol {
-    private let helper: CalculationHelperProtocol
+import Foundation
 
-    init(helper: CalculationHelperProtocol) {
-        self.helper = helper
-    }
-
-    func tokenizeExpression(_ expression: String) -> [String] {
+final class RPNFunctions {
+    static func tokenizeExpression(_ expression: String) -> [String] {
         var tokens: [String] = []
         var currentToken = ""
-        let express = helper.replaceCommasWithDots(in: expression)
-
+        let express = replaceCommasWithDots(in: expression)
+        
         for char in express {
-            if char.isNumber || char == "," || char == "." {
+            if char.isNumber ||  char == "," || char == "." {
                 currentToken.append(char)
             } else if ["+", "-", "*", "÷", "(", ")", "/", "×"].contains(char) {
                 if !currentToken.isEmpty {
@@ -30,25 +26,25 @@ final class RPNCalculatorService: RPNCalculatorServiceProtocol {
                 continue
             }
         }
-
+        
         if !currentToken.isEmpty {
             tokens.append(currentToken)
         }
-
+        
         return tokens
     }
-
-    func convertToRPN(from tokens: [String]) -> [String] {
+    
+    static func parseToRPN(to tokens: [String]) -> [String] {
         var output: [String] = []
         var operators = Stack<String>()
         let precedence: [String: Int] = ["+": 1, "-": 1, "*": 2, "/": 2, "÷": 2, "×": 2]
-
+        
         var expectUnary = true
         var index = 0
-
+        
         while index < tokens.count {
             let token = tokens[index]
-
+            
             if let _ = Double(token) {
                 output.append(token)
                 expectUnary = false
@@ -78,23 +74,23 @@ final class RPNCalculatorService: RPNCalculatorServiceProtocol {
                 operators.push(token)
                 expectUnary = true
             }
-
+            
             index += 1
         }
-
+        
         while let op = operators.pop() {
             if op != "(" {
                 output.append(op)
             }
         }
-
+        
         return output
     }
-
-    func calculateRPN(_ expression: [String]) -> String {
+    
+    static func calculateRPN(to postfix: [String]) -> String {
         var resultStack = Stack<Double>()
-
-        for token in expression {
+        
+        for token in postfix {
             if let number = Double(token) {
                 resultStack.push(number)
             } else if let op = Operators(rawValue: token),
@@ -108,10 +104,38 @@ final class RPNCalculatorService: RPNCalculatorServiceProtocol {
                 }
             }
         }
-
+        
         if let finalResult = resultStack.pop() {
-            return helper.formatResult(finalResult)
+            return formatResult(finalResult)
         }
         return "Неопределено"
+    }
+    
+    
+    
+    // MARK: - Private Helpers
+    private static func replaceCommasWithDots(in text: String) -> String {
+        return text.replacingOccurrences(of: ",", with: ".")
+    }
+    
+    private static func replaceDotsWithCommas(in text: String) -> String {
+        return text.replacingOccurrences(of: ".", with: ",")
+    }
+    
+    private static func formatResult(_ number: Double) -> String {
+        let roundedNumber = Double(String(format: "%.10f", number)) ?? number
+        if roundedNumber.isInfinite || roundedNumber.isNaN {
+            return "Неопределено"
+        }
+        
+        if roundedNumber > Double(Int.max) || roundedNumber < Double(Int.min) {
+            return String(roundedNumber)
+        }
+        
+        if roundedNumber.truncatingRemainder(dividingBy: 1) == 0 {
+            return replaceDotsWithCommas(in: String(Int(roundedNumber)))
+        } else {
+            return replaceDotsWithCommas(in: String(roundedNumber))
+        }
     }
 }

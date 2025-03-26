@@ -1,9 +1,11 @@
 //
-//  Operators.swift
+//  Enums.swift
 //  RPNCalculator
 //
-//  Created by Umidjon Fayzimatov on 18/03/25.
+//  Created by Umidjon Fayzimatov on 26/03/25.
 //
+
+import Foundation
 
 enum Operators: String {
     case multiply = "×"
