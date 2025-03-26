@@ -1,9 +1,11 @@
 //
-//  Struct.swift
+//  Stack.swift
 //  RPNCalculator
 //
 //  Created by Umidjon on 18/03/25.
 //
+
+import Foundation
 
 struct Stack<T> {
     private var elements: [T] = []
@@ -20,14 +22,7 @@ struct Stack<T> {
         return elements.last
     }
     
-    var isEmpty: Bool {
-        return elements.isEmpty
-    }
     
-    
-    var count: Int {
-        return elements.count
-    }
 }
 
 
