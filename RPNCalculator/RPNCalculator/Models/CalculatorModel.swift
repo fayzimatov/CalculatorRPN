@@ -89,6 +89,8 @@ final class CalculatorModel {
     }
     
     private func checkerComma() {
+        clearElement = false
+
         if beginWith(in: currentInput) {
             return
         }
@@ -112,6 +114,8 @@ final class CalculatorModel {
                 currentInput += ","
             }
         }
+        
+        print(clearElement)
     }
     private func checkerEqual() {
         if beginWith(in: currentInput) {
@@ -200,11 +204,14 @@ final class CalculatorModel {
         }
     }
     private func checkerNumbers(_ value: String) {
-        resultInput = ""
-        if let last = currentInput.last, clearElement && last != "," {
+        
+        print(clearElement)
+        
+        if clearElement {
             currentInput = ""
             clearElement = false
         }
+        resultInput = ""
         let result = currentInput.split { ["+", "-", "÷", "×"].contains($0) }
         if currentInput == "0" {
             currentInput = value

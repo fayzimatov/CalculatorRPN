@@ -126,30 +126,20 @@ final class RPNFunctions {
         if number.isInfinite || number.isNaN {
             return "Неопределено"
         }
+
+        let absNumber = abs(number)
         
-       
-        if abs(number) > 0 && abs(number) < 0.000000001 {
-            let formatter = NumberFormatter()
+        let formatter = NumberFormatter()
+        formatter.maximumFractionDigits = number > 1 ? 7 : 10
+        formatter.decimalSeparator = ","
+        formatter.groupingSeparator = ""
+
+        // Если число слишком большое или слишком маленькое — используем научную нотацию
+        if (absNumber >= 1e8 || absNumber <= 1e-8) && number != 0 {
             formatter.numberStyle = .scientific
-            formatter.minimumFractionDigits = 1
-            formatter.maximumFractionDigits = 10
             formatter.exponentSymbol = "e"
-            formatter.decimalSeparator = ","
-            if let formatted = formatter.string(from: NSNumber(value: number)) {
-                return formatted
-            }
         }
-        
-        let roundedNumber = Double(String(format: "%.10f", number)) ?? number
-        
-        if roundedNumber > Double(Int.max) || roundedNumber < Double(Int.min) {
-            return String(roundedNumber)
-        }
-        
-        if roundedNumber.truncatingRemainder(dividingBy: 1) == 0 {
-            return replaceDotsWithCommas(in: String(Int(roundedNumber)))
-        } else {
-            return replaceDotsWithCommas(in: String(roundedNumber))
-        }
+
+        return formatter.string(from: NSNumber(value: number)) ?? String(number)
     }
 }
