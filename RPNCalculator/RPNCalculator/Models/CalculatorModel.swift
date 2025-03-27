@@ -16,6 +16,7 @@ final class CalculatorModel {
     private(set) var resultInput: String?
     
     
+    
     // MARK: - Public Methods
     func resetInput() {
         currentInput = "0"
@@ -46,6 +47,7 @@ final class CalculatorModel {
         }
         return expression
     }
+    
     
     
     // MARK: - Private Methods
@@ -229,6 +231,7 @@ final class CalculatorModel {
             currentInput += value
         }
     }
+    
     
     
     

@@ -8,9 +8,12 @@
 import UIKit
 
 final class UIConstants {
+    // MARK: - Адаптация интерфейса
+    // Учитывает тип устройства и размер экрана, чтобы кнопки оставались круглыми на всех моделях iPhone.
     static let device = UIDevice.current.userInterfaceIdiom
     static let windowWidth: CGFloat = UIScreen.main.bounds.width
     static let windowHeight: CGFloat = UIScreen.main.bounds.height
+    
     static let buttonSize = (windowWidth - 3 * intervalSpacingStackView - 2 * leftSpacingVStackview) / 4
     static let vStackViewBottom: CGFloat = -20
     static let inputLabelBottom: CGFloat = -25
