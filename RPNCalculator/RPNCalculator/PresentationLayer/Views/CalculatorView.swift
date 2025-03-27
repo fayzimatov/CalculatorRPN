@@ -33,7 +33,7 @@ final class CalculatorView: UIView {
         label.text = "0"
         label.textAlignment = .right
         label.font = .boldSystemFont(ofSize: 50)
-        label.textColor = .customLabel1
+        label.textColor = .defaultCustomLabel
         return label
     }()
     
@@ -48,7 +48,7 @@ final class CalculatorView: UIView {
         let label = UILabel()
         label.textAlignment = .right
         label.font = .systemFont(ofSize: 30)
-        label.textColor = .customLightGray1
+        label.textColor = .defaultCustomLightGray
         return label
     }()
     
@@ -90,7 +90,7 @@ final class CalculatorView: UIView {
     
     // MARK: - Private Methods
     private func setupUI() {
-        backgroundColor = UIColor(resource: .customBlack)
+        backgroundColor = .defaultCustomBlack
         addSubview(scrollViewInputLabel)
         addSubview(scrollViewResultLabel)
         scrollViewInputLabel.addSubview(inputLabel)

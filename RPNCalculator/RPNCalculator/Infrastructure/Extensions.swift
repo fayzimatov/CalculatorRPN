@@ -39,11 +39,11 @@ import UIKit
 
 
 extension UIColor {
-    static let customLabel1 = UIColor(named: "customLabel") ?? .white
-    static let customLightGray1 = UIColor(named: "customLightGray") ?? .lightGray
-    static let customBlack1 = UIColor(named: "customBlack") ?? .black
-    static let customGray1 = UIColor(named: "customGray") ?? .gray
-    static let customOrange1 = UIColor(named: "customOrange") ?? .orange
+    static let defaultCustomLabel = UIColor(named: "customLabel") ?? .white
+    static let defaultCustomLightGray = UIColor(named: "customLightGray") ?? .lightGray
+    static let defaultCustomBlack = UIColor(named: "customBlack") ?? .black
+    static let defaultCustomGray = UIColor(named: "customGray") ?? .gray
+    static let defaultCustomOrange = UIColor(named: "customOrange") ?? .orange
 }
 
 
