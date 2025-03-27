@@ -30,7 +30,7 @@ final class RPNFunctions {
         if !currentToken.isEmpty {
             tokens.append(currentToken)
         }
-        
+        print("Tokens -> \(tokens)")
         return tokens
     }
     
@@ -83,7 +83,7 @@ final class RPNFunctions {
                 output.append(op)
             }
         }
-        
+        print("ParsingRPN -> \(output)")
         return output
     }
     
@@ -99,7 +99,7 @@ final class RPNFunctions {
                 if num1 == 0 && num2 == 0, op.rawValue == "÷" {
                     return "Бесконечность"
                 } else {
-                    let result = op.apply(num1, num2)/*.rounded(toPlaces: 8)*/
+                    let result = op.apply(num1, num2)
                     resultStack.push(result)
                 }
             }

@@ -200,7 +200,8 @@ final class CalculatorModel {
         }
     }
     private func checkerNumbers(_ value: String) {
-        if clearElement && ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"].contains(value) {
+        resultInput = ""
+        if let last = currentInput.last, clearElement && last != "," {
             currentInput = ""
             clearElement = false
         }
@@ -245,7 +246,6 @@ final class CalculatorModel {
     private func toggleLastNumberSign(in text: String) -> String {
         var value = text
         let result = splitExpression(value)
-        print("toggle: \(result)")
         
         
         guard let last = result.last else { return value }
