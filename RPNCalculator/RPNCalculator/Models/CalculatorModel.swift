@@ -115,7 +115,6 @@ final class CalculatorModel {
             }
         }
         
-        print(clearElement)
     }
     private func checkerEqual() {
         if beginWith(in: currentInput) {
@@ -205,7 +204,6 @@ final class CalculatorModel {
     }
     private func checkerNumbers(_ value: String) {
         
-        print(clearElement)
         
         if clearElement {
             currentInput = ""
@@ -279,7 +277,6 @@ final class CalculatorModel {
                 let newLast = "(-" + last + ")" // (X) -> (-X)
                 value.removeLast(last.count)
                 value.append(newLast)
-                print(value)
                 
                 
             }
