@@ -8,6 +8,12 @@
 
 import UIKit
 
+protocol CalculatorViewDelegate: AnyObject {
+    func buttonTapped(_ title: String)
+    func buttonLongPressed(_ title: String)
+}
+
+
 final class CalculatorView: UIView {
     // MARK: - Properties
     weak var delegate: CalculatorViewDelegate?

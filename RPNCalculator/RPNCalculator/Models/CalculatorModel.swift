@@ -50,6 +50,9 @@ final class CalculatorModel {
     
     // MARK: - Private Methods
     private func checkerDelete() {
+        if currentInput.contains(where: { $0.isLetter }) {
+            currentInput = "0"
+        }
         if !currentInput.isEmpty {
             currentInput.removeLast()
             if currentInput.isEmpty {

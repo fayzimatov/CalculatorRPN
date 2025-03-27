@@ -5,6 +5,7 @@
 //  Created by Umidjon on 18/03/25.
 //
 
+
 import Foundation
 
 final class RPNFunctions {
@@ -14,7 +15,7 @@ final class RPNFunctions {
         let express = replaceCommasWithDots(in: expression)
         
         for char in express {
-            if char.isNumber ||  char == "," || char == "." {
+            if char.isNumber || char == "," || char == "." {
                 currentToken.append(char)
             } else if ["+", "-", "*", "÷", "(", ")", "/", "×"].contains(char) {
                 if !currentToken.isEmpty {
@@ -34,6 +35,7 @@ final class RPNFunctions {
         return tokens
     }
     
+    
     static func parseToRPN(to tokens: [String]) -> [String] {
         var output: [String] = []
         var operators = Stack<String>()
@@ -45,7 +47,7 @@ final class RPNFunctions {
         while index < tokens.count {
             let token = tokens[index]
             
-            if let _ = Double(token) {
+            if Decimal(string: token) != nil {
                 output.append(token)
                 expectUnary = false
             } else if token == "(" {
@@ -58,7 +60,7 @@ final class RPNFunctions {
                 _ = operators.pop()
                 expectUnary = false
             } else if token == "-" && expectUnary {
-                if index + 1 < tokens.count, let nextNum = Double(tokens[index + 1]) {
+                if index + 1 < tokens.count, let nextNum = Decimal(string: tokens[index + 1]) {
                     output.append("-\(nextNum)")
                     index += 1
                 } else {
@@ -87,19 +89,20 @@ final class RPNFunctions {
         return output
     }
     
+    
     static func calculateRPN(to postfix: [String]) -> String {
-        var resultStack = Stack<Double>()
+        var resultStack = Stack<Decimal>()
         
         for token in postfix {
-            if let number = Double(token) {
+            if let number = Decimal(string: token) {
                 resultStack.push(number)
             } else if let op = Operators(rawValue: token),
                       let num1 = resultStack.pop(),
                       let num2 = resultStack.pop() {
-                if num1 == 0 && num2 == 0, op.rawValue == "÷" {
+                if num1 == 0 && num2 == 0 && op.rawValue == "÷" {
                     return "Бесконечность"
                 } else {
-                    let result = op.apply(num1, num2).rounded(toPlaces: 8)
+                    let result = op.applyDecimal(num1, num2)
                     resultStack.push(result)
                 }
             }
@@ -112,7 +115,6 @@ final class RPNFunctions {
     }
     
     
-    
     // MARK: - Private Helpers
     private static func replaceCommasWithDots(in text: String) -> String {
         return text.replacingOccurrences(of: ",", with: ".")
@@ -122,20 +124,28 @@ final class RPNFunctions {
         return text.replacingOccurrences(of: ".", with: ",")
     }
     
-    private static func formatResult(_ number: Double) -> String {
-        let roundedNumber = Double(String(format: "%.10f", number)) ?? number
-        if roundedNumber.isInfinite || roundedNumber.isNaN {
-            return "Неопределено"
+    private static func formatResult(_ number: Decimal) -> String {
+            let formatter = NumberFormatter()
+            formatter.numberStyle = .decimal
+            formatter.maximumFractionDigits = abs(number) > 1 ? 7 : 10
+            formatter.decimalSeparator = ","
+            formatter.groupingSeparator = ""
+
+            let nsDecimal = NSDecimalNumber(decimal: number)
+            let doubleValue = nsDecimal.doubleValue
+
+            
+            if (abs(doubleValue) >= 1e8 || abs(doubleValue) <= 1e-8) && doubleValue != 0 {
+                formatter.numberStyle = .scientific
+                formatter.exponentSymbol = "e"
+            }
+
+            if number.isNaN || number.isInfinite {
+                return "Неопределено"
+            }
+
+            return formatter.string(from: nsDecimal) ?? String(describing: number)
         }
-        
-        if roundedNumber > Double(Int.max) || roundedNumber < Double(Int.min) {
-            return String(roundedNumber)
-        }
-        
-        if roundedNumber.truncatingRemainder(dividingBy: 1) == 0 {
-            return replaceDotsWithCommas(in: String(Int(roundedNumber)))
-        } else {
-            return replaceDotsWithCommas(in: String(roundedNumber))
-        }
-    }
 }
+
+
