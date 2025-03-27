@@ -99,7 +99,7 @@ final class RPNFunctions {
                 if num1 == 0 && num2 == 0, op.rawValue == "÷" {
                     return "Бесконечность"
                 } else {
-                    let result = op.apply(num1, num2).rounded(toPlaces: 8)
+                    let result = op.apply(num1, num2)/*.rounded(toPlaces: 8)*/
                     resultStack.push(result)
                 }
             }
@@ -123,10 +123,24 @@ final class RPNFunctions {
     }
     
     private static func formatResult(_ number: Double) -> String {
-        let roundedNumber = Double(String(format: "%.10f", number)) ?? number
-        if roundedNumber.isInfinite || roundedNumber.isNaN {
+        if number.isInfinite || number.isNaN {
             return "Неопределено"
         }
+        
+       
+        if abs(number) > 0 && abs(number) < 0.000000001 {
+            let formatter = NumberFormatter()
+            formatter.numberStyle = .scientific
+            formatter.minimumFractionDigits = 1
+            formatter.maximumFractionDigits = 10
+            formatter.exponentSymbol = "e"
+            formatter.decimalSeparator = ","
+            if let formatted = formatter.string(from: NSNumber(value: number)) {
+                return formatted
+            }
+        }
+        
+        let roundedNumber = Double(String(format: "%.10f", number)) ?? number
         
         if roundedNumber > Double(Int.max) || roundedNumber < Double(Int.min) {
             return String(roundedNumber)
