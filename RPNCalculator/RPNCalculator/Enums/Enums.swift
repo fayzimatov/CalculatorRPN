@@ -15,14 +15,16 @@ enum Operators: String {
     case minus = "-"
     case plus = "+"
 
-    func applyDecimal(_ num1: Decimal, _ num2: Decimal) -> Decimal {
+    func apply(_ num1: Double, _ num2: Double) -> Double {
         switch self {
-        case .plus: return num2 + num1
-        case .minus: return num2 - num1
-        case .multiply,.multiply2: return num2 * num1
-        case .divide,.divide2: return num1 != 0 ? num2 / num1 : Decimal.nan
+        case .multiply, .multiply2:
+            return num1 * num2
+        case .divide, .divide2:
+            return num2 / num1
+        case .minus:
+            return num2 - num1
+        case .plus:
+            return num1 + num2
         }
     }
-    
-   
 }
